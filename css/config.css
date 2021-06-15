@@ -1,0 +1,14 @@
+body,ol,ul,h1,h2,h3,h4,h5,h6,p,th,td,dl,dd,form,fieldset,legend,input,textarea,select{margin:0;padding:0} 
+body{background:#fff;-webkit-text-size-adjust:100%;} 
+a{color:#2d374b;text-decoration:none} 
+a:hover{color:#cd0200;text-decoration:underline} 
+em{font-style:normal} 
+li{list-style:none} 
+/*img{border:0;vertical-align:middle} */
+img{border:0;vertical-align:middle;-webkit-user-drag: none;} 
+table{border-collapse:collapse;border-spacing:0} 
+p{word-wrap:break-word}
+html,body{height: 100%;overflow: hidden;font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;}
+*{moz-user-select: -moz-none;-moz-user-select: none;-o-user-select:none;-khtml-user-select:none;-webkit-user-select:none;-ms-user-select:none;user-select:none;}
+.clearfloat:after{display:block;clear:both;content:"";visibility:hidden;height:0}
+

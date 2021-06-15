@@ -1,0 +1,29 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd" >
+<!--
+2013-9-30: Created.
+-->
+<svg>
+<metadata>
+Created by iconfont
+</metadata>
+<defs>
+
+<font id="iconfont" horiz-adv-x="1024" >
+  <font-face
+    font-family="iconfont"
+    font-weight="500"
+    font-stretch="normal"
+    units-per-em="1024"
+    ascent="896"
+    descent="-128"
+  />
+    <missing-glyph />
+    
+    <glyph glyph-name="_huabanfuben" unicode="&#58883;" d="M410.504533-3.447467V379.613867L110.865067 771.447467h802.269866L613.495467 379.613867v-261.290667l-202.990934-121.770667z m-213.162666 732.16l255.8976-334.609066v-322.048l117.538133 70.485333v251.562667L826.6752 728.712533H197.341867z"  horiz-adv-x="1024" />
+
+    
+
+
+  </font>
+</defs></svg>

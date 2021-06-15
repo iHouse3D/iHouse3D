@@ -1,0 +1,51 @@
+/*滚动条*/
+.el-scrollbar__wrap {
+  overflow-x: hidden !important;
+}
+/*滚动条*/
+html,body{
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+	font-family:"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;
+}
+/*can*/
+.canvas{
+	width: 100%;
+	height: 100%;
+	background-color: #D5D5D5;
+	position: absolute;
+	top:0;
+	left: 0;
+}
+
+
+.text-color{
+	color: #666;
+}
+/*页面主体*/
+.cont-body{
+	position: absolute;
+	width: 100%;
+	Height:100%
+	overflow: hidden;
+}
+
+/*can*/
+.canvas{
+	width: 100%;
+	height: 100%;
+	background-color: #D5D5D5;
+	position: absolute;
+	top:0;
+	left: 0;
+}
+/*can*/
+/*gui*/
+
+#myGui{
+	position: absolute;
+	right: 0px;
+	top: 0px;
+}
+/*gui*/

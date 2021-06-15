@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="content-type"
+    content="text/html; charset=UTF-8">
+  <meta charset="utf-8">
+  <meta name="renderer"
+    content="webkit">
+  <meta http-equiv="X-UA-Compatible"
+    content="IE=Edge,chrome=1">
+  <title>预算报价</title>
+  <meta name="keywords"
+    content="户型图,户型图大全,画户型,户型设计,户型图设计,户型图绘制软件,户型图绘制工具">
+  <meta name="description"  
+    content="在线绘制户型图工具">
+  <script src="http://www.ihouse3d.com.cn/h5/baojia/basic/js/jquery.js"
+    type="text/javascript"
+    charset="utf-8"></script>
+  <link rel="stylesheet"
+    type="text/css"
+    href="http://www.ihouse3d.com.cn/h5/baojia/basic/css/global.css">
+  <link rel="stylesheet"
+    type="text/css"
+    href="http://www.ihouse3d.com.cn/h5/baojia/basic/css/v2_costlist.css">
+  <style type="text/css"
+    media=print>
+    .noprintr {
+      display: none !important;
+    }
+  </style>
+</head>
+
+<body class="cost-list">
+  <!--top-->
+  <div class="w_header">
+    <div class="fl w_yusuan">
+      预算报价
+    </div>
+  </div>
+  <!--top-->
+  <!--表头-->
+  <div class="w_from">
+    <div class="fl">
+      客户姓名：<input type="text"
+        name=""
+        id=""
+        value="" />
+    </div>
+    <div class="fl">
+      电　话：<input type="text"
+        name=""
+        id=""
+        value="" />
+    </div>
+    <div class="fl">
+      面　　　积：<input type="text"
+        name=""
+        id=""
+        value="" />
+    </div>
+    <div class="fl">
+      合同编号：<input type="text"
+        name=""
+        id=""
+        value="" />
+    </div>
+
+    <div class="fl">
+      设计师：<input type="text"
+        name=""
+        id=""
+        value="" />
+    </div>
+    <div class="fl">
+      设计师电话：<input type="text"
+        name=""
+        id=""
+        value="" />
+    </div>
+    <div class="fl"
+      style="width: 1050px;">
+      施工地址：<input type="text"
+        style="width: 905px;"
+        name=""
+        id=""
+        value="" />
+    </div>
+
+  </div>
+  <!--表头-->
+
+  <div id="content">
+    <div class="w980">
+      <div class="detail cost-main edit-mode">
+        <ul class="cost-cat-list">
+          <li class="cost-cat-item cost-room-item">
+            <div class="item-table">
+              <ul class="item-thead clearfix">
+                <li class="item-th th-room">类别</li>
+                <li class="item-th th-type">名称</li>
+                <li class="item-th th-bm">数量</li>
+                <li class="item-th th-name">单价</li>
+                <li class="item-th th-amount">总价</li>
+                <li class="item-th th-per">备注</li>
+              </ul>
+              <div id="item-tbody"
+                class="item-tbody">
+
+              </div>
+              <div class="add-item noprintr">
+                <div class="add-item-btn"
+                  id="add-item-btn">
+                  <i class="icon"
+                    id="ic">总价:</i>
+                </div>
+              </div>
+            </div>
+            <!--endprint-->
+          </li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+  <!--签字-->
+  <div class="w_qz">
+    <div class="w_qzL fl">
+      <div class="w_jiaf">甲方签字：<input type="text"
+          name=""
+          id=""
+          value="" /></div>
+      <div class="w_date">
+        时间：
+        <input type="text"
+          name=""
+          id=""
+          value="" />年
+        <input type="text"
+          name=""
+          id=""
+          value="" />月
+        <input type="text"
+          name=""
+          id=""
+          value="" />日
+      </div>
+    </div>
+    <div class="w_qzR fl">
+      <div class="w_jiaf">乙方签字：<input type="text"
+          name=""
+          id=""
+          value="" /></div>
+      <div class="w_date">
+        时间：
+        <input type="text"
+          name=""
+          id=""
+          value="" />年
+        <input type="text"
+          name=""
+          id=""
+          value="" />月
+        <input type="text"
+          name=""
+          id=""
+          value="" />日
+      </div>
+    </div>
+
+  </div>
+
+  <!--	二维码查看信息-->
+  <div id="twoCode">
+    <img />
+  </div>
+
+  <!--打印-->
+  <div id="w_dy"
+    class="noprintr">
+    <div class="w_dy">
+      <a href="#"
+        id="print_doc">打印</a>
+    </div>
+  </div>
+  <!--打印-->
+  <script>
+    const isPC = function () {
+      let userAgentInfo = navigator.userAgent;
+      let Agents = ["Android", "iPhone", "SymbianOS", "Windows Phone", "iPad", "iPod"];
+      let flag = true;
+      for (let v = 0; v < Agents.length; v++) {
+        if (userAgentInfo.indexOf(Agents[v]) > 0) {
+          flag = false;
+          break;
+        };
+      };
+      return flag;
+    };
+    //如果设备是手机，则不显示二位码分享了
+    // if (!isPC()) {
+    // 	$("#twoCode").remove();
+    // 	$("title").empty();
+    // };
+
+    window.onload = function () {
+      let data = lastname = sessionStorage.getItem("addDatas");
+      let SceneFileSrcs = sessionStorage.getItem("SceneFile");
+
+      let m_strWebServiceStrs = sessionStorage.getItem("m_strWebServiceStr");
+      let wxScr = SceneFileSrcs.split(m_strWebServiceStrs)[1].split("/data_")[0];
+      let arrDatas = data.split("|");
+      let strData;
+      let number = 0;
+      for (let [index, items] of arrDatas.entries()) {
+        strData = items.split(",");
+        $('<ul>' + '<li>' + strData[0] + '</li>' +
+          '<li>' + '<div><img src=' + strData[1] + '></div>' + strData[2] + '</li>' +
+          /* '<li>' + '<div style="background: #ffffff url(' + strData[1] +
+          ') no-repeat center center "></div>' + strData[2] + '</li>' + */
+          '<li>' + strData[3] + '</li>' +
+          '<li>' + strData[4] + '</li>' +
+          '<li>' + strData[5] + '</li>' +
+          '<li><div><ul><li>' + strData[6] + '</li><li>' + strData[7] +
+          '</li></ul></div>' + '</li>' +
+          '</ul>').appendTo($("#item-tbody"));
+        number += parseInt(strData[5]);
+      };
+      console.log(strData);
+      // style="background: #ffffff url(strData[1]) no-repeat center center
+      let itu = $("#item-tbody>ul");
+      itu.css({
+        "width": "1200px",
+        "height": "80px",
+        "margin-top": "5px",
+        "border-bottom": "1px solid #ccc",
+      }).children().css({
+        "float": "left",
+        "height": "80px",
+        "display": "flex",
+        "flex-direction": "row",
+        "justify-content": "center",
+        "align-items": "center",
+        "list-style": "none",
+      });
+      itu.each(function (index, ituValue) {
+        let i = $(ituValue).children();
+        i.first().css({
+          "fontSize": "16px",
+          "width": "120px",
+        });
+        i.last().css({
+          "width": "470px",
+          "justify-content": "flex-start",
+        }).children().css({
+          "width": "420px",
+          "height": "50px",
+          "margin-left": "5px",
+          "display": "flex",
+          "align-items": "center",
+        }).find("li").css({
+          "fontSize": "15px",
+          "margin-left": "5px",
+        });
+        i.eq(1).css({
+          "width": "280px",
+          // "background-color": "red",
+          "padding-left": "20px",
+          "justify-content": "flex-start",
+        }).find("img").css({
+          "width": "80px",
+          "height": "80px",
+          "margin-right": "20px",
+        });
+        i.eq(2).css({
+          "width": "103px",
+        });
+        i.eq(3).css({
+          "width": "103px",
+        });
+        i.eq(4).css({
+          "width": "103px",
+        });
+      });
+
+      $("#ic").text("总价:" + number + "元");
+      BuilderBaoJiaReport(wxScr);
+    };
+
+    function BuilderBaoJiaReport(SceneFileSrcs) {
+      let str = $("html").html();
+      let str1 = `<!DOCTYPE html><html lang="en">${str}</html>`;
+      // 生成报表的二维码和网站地址
+      var webUrl = localStorage.getItem('WebService');
+      if(null == webUrl)
+      {
+        webUrl = 'http://'+window.location.host+'/';
+      }
+
+      $.ajax({
+        url: webUrl+'Service1.asmx/BuilderBaoJiaReport',
+        type: "Post",
+        dataType: "json",
+        contentType: "application/x-www-form-urlencoded; charset=utf-8",
+        data: {
+          "ScenePath": SceneFileSrcs,
+          "ReportData": str1,
+          "ReportType": "0",
+        },
+        success: function (data) {
+          if (data.code == 1) {
+            var webUrl = localStorage.getItem('WebService');
+            if(null == webUrl)
+            {
+              webUrl = 'https://'+window.location.host+'/';
+            }
+
+            let shareAddr = webUrl + data.addr;
+            let thumbnail = webUrl + data.thumbnail;
+            ShowWXImage(shareAddr, thumbnail, webUrl);
+          }
+        },
+        error: function (err) {
+          console.log(err);
+        }
+      });
+
+    }
+
+    function ShowWXImage(shareAddr, thumbnail, serverAddr) {
+      let url = serverAddr + 'service1.asmx';
+      let xhr = new XMLHttpRequest();
+      xhr.open('POST', url, true);
+      xhr.responseType = "blob";
+      xhr.onload = function () {
+        if (this.status == 200) {
+          let blob = xhr.response;
+          let img = document.createElement("img");
+          img.onload = function (e) {
+            window.URL.revokeObjectURL(img.src);
+          };
+          img.src = window.URL.createObjectURL(blob);
+          //window.parent.showImg(img.src);
+          $("#twoCode > img").attr("src", img.src);
+        }
+      };
+			let strTite= encodeURI("预算报价");
+			var sr =
+					'<?xml version="1.0" encoding="utf-8"?>' +
+					'<soap12:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://www.w3.org/2003/05/soap-envelope">' +
+					'  <soap12:Body>' +
+					'    <GetWXShareImage xmlns="http://tempuri.org/">' +
+					'      <ShareAddr>' + shareAddr + '</ShareAddr>' +
+					'      <ShareThumbnail>' + thumbnail + '</ShareThumbnail>' +
+					'      <ShareTitle>'+strTite+'</ShareTitle>' +
+					'      <ShareDes></ShareDes>' +
+					'    </GetWXShareImage>' +
+					'  </soap12:Body>' +
+					'</soap12:Envelope>';
+      xhr.setRequestHeader('Content-Type', 'text/xml');
+      xhr.send(sr);
+    }
+    $("#print_doc").on("click", function () {
+      window.print();
+    });
+  </script>
+</body>
+
+</html>

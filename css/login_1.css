@@ -1,0 +1,167 @@
+.login-bg {
+    /*display: none;*/
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    /*background: rgba(0, 0, 0, 0.7);*/
+    z-index: 9999;
+}
+
+.login-box {
+    margin: 0 auto;
+    margin-top: 8%;
+    width: 690px;
+    height: 467px;
+    background: #ffffff;
+    border-radius: 10px 10px 10px 10px;
+    display: flex;
+}
+
+.login-img {
+    width: 210px;
+    height: 467px;
+    border-radius: 10px 0 0 10px
+}
+.login_heager{
+    margin-top: 40px;
+    text-align: center;
+}
+.login_heager span{
+    font-weight: bold;
+    font-size: 20px;
+    cursor: pointer;
+}
+.login_heager span:nth-of-type(2){
+    margin-left:30px;
+}
+.login-text.active{
+    color: #3e82f7;
+}
+.close-box {
+    border-radius: 0 10px 0 0;
+    width: 512px;
+    height: 45px;
+    /* background: #f6f6f6; */
+    /* border-bottom: 1px solid #ebeaea; */
+}
+
+.close {
+    margin-left: 470px;
+    background: url(../img/close.png);
+    width: 35px;
+    height: 35px;
+    cursor: pointer;
+    position: relative;
+    top: 14px;
+    right: 42px;
+}
+
+.login-text {
+    width: 475px;
+    text-align: center;
+    padding: 20px 0;
+    color: #000000;
+    font-size: 25px;
+    font-weight: bold;
+}
+.id-input {
+    width: 322px;
+    height: 47px;
+    /* background: #e8f0fe; */
+    padding: 0 0 0 34px;
+    margin-left: 76px;
+    margin-top: 20px;
+    border: 1px solid #eee;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+.trouble {
+    padding-top: 10px;
+    width: 355px;
+    margin-left: 80px;
+    text-align: right;
+    color: #0066ff;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.login-btn {
+    width: 355px;
+    height: 50px;
+    background: #36a803;
+    text-align: center;
+    line-height: 50px;
+    color: #ffffff;
+    font-weight: bold;
+    margin: 20px auto 0;
+    border-radius: 2px;
+    cursor: pointer;
+}
+
+.other-title {
+    width: 328px;
+    text-align: center;
+    margin: 10px auto 0;
+    color: #999999;
+    font-size: 12px;
+}
+
+.other-box {
+    width: 255px;
+    margin:10px auto;
+    display: flex;
+    justify-content: space-between;
+}
+.input-cont{
+    position: relative;
+}
+.verificationCode-btn{
+    position: absolute;
+    top: 21px;
+    right: 93px;
+    width: 100px;
+    height: 47px;
+    text-align: center;
+    line-height: 47px;
+    border-radius: 3px;
+    cursor: pointer;
+    color: #999999;
+}
+.wx {
+    display: block;
+    width: 58px;
+    height: 57px;
+    cursor: pointer;
+    background: url(../img/newpop.png) -166px -10px;
+}
+
+.wx:hover {
+    background: url(../img/newpop.png) -166px -87px;
+}
+
+.qq {
+    display: block;
+    width: 58px;
+    height: 57px;
+    cursor: pointer;
+    background: url(../img/newpop.png) -10px -10px;
+}
+
+.qq:hover {
+    background: url(../img/newpop.png) -88px -10px;
+}
+
+.phone {
+    display: block;
+    width: 58px;
+    height: 57px;
+    cursor: pointer;
+    background: url(../img/newpop.png) -10px -87px;
+}
+
+.phone:hover {
+    background: url(../img/newpop.png) -88px -87px;
+}

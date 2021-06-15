@@ -1,0 +1,1989 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"><!-- 最新 ie -->
+	<!--<link rel="shortcut icon" href="img/3d.png" type="image/x-icon">-->
+	<link rel="shortcun icon" href="img/favicon.ico">
+	<title>iHouse3D云设计</title>
+	<link rel="bookmark" href="img/favicon.ico">
+	<link rel="stylesheet" href="css/index.css">
+	<link rel="stylesheet" href="css/font_ico/iconfont.css">
+	<link rel="stylesheet" href="css/element.css">
+	<link rel="stylesheet" href="css/config.css">
+	<link rel="stylesheet" href="css/addStyle.css">
+	<link rel="stylesheet" href="css/login.css">
+	<link rel="stylesheet" href="css/bst.css">
+	<script>var accountType = 0; //0 显示全部界面功能 1 越南</script>
+	<script src="http://pv.sohu.com/cityjson?ie=utf-8"></script>
+	<script type="text/javascript" src="js/vue.min.js"></script>
+	<script type="text/javascript" src="js/element.js"></script>
+	<script type="text/javascript" src="js/jquery-3.2.1.js"></script>
+	<script type="text/javascript" src="js/md5.js">	</script>
+	<script type="text/javascript" src="js/login.js"></script>
+	<script src="js/event.js"></script>
+</head>
+
+<style>
+	#isUser { color: black;position: absolute;
+		background-color: rgba(0, 0, 0, 0);
+		left: 980px;top: 230px; font-size: 14px;
+	}
+	.hover_img {position: absolute;left: 0px;top: 0px;width: 70px;display: none;z-index: 3000;
+	}	
+</style>   
+<body onload='loginScroll()'>
+	<div id="app">
+		<!-- 导航栏界面 -->
+		<div class="cont-header">
+			<div class="imgLogo">
+				<img src="" alt='{{ $t("Language.Title")}}'>
+				<span id="mLogoText" style="color: rgb(103, 194, 58);font: 25px 微软雅黑;">modulab</span>
+				<span class="imgLogoName text-color">{{ $t("Language.LogoName")}}</span>
+			</div>
+			<div class="header-location">
+				<span class="el-icon-location icon-color"></span>
+				<span id="mCity" class="text-color" style="font-size:14px">{{ $t("Language.City")}}</span>
+			</div>
+			<div class="header-select">
+				<i class="icon iconfont icon-diejia"></i>
+				<el-select v-model="header.selectValue" placeholder='请选择' @change="OnShowFloor()">
+					<el-option v-for="item in header.selectOption" :key="item.value" :label="item.label"
+						:value="item.value">
+					</el-option>
+				</el-select>
+			</div>
+			<div class="header-menu">
+				<el-menu :default-active="1" class="el-menu-demo" mode="horizontal">
+					<el-submenu index="1">
+						<template slot="title">{{ $t("Language.File")}}</template>
+						<el-menu-item index="1-1" onClick="openCreate(-1)">{{ $t("Language.MyDesign")}}</el-menu-item>
+						<el-menu-item index="1-2" onClick="OnpenProjectEditor('保存')">{{ $t("Language.Save")}}</el-menu-item>
+						<el-menu-item index="1-3" onClick='OnpenProjectEditor(i18n.t("Language.SaveAs"))' v-if="!accountType==1">{{ $t("Language.SaveAs")}}</el-menu-item>
+					</el-submenu>
+					<el-menu-item index="2" id="gBaoCun">
+						<i class="icon iconfont icon-baocun"></i>
+						<span onclick="OnpenProjectEditor('保存')">{{ $t("Language.Save")}}</span>
+					</el-menu-item>
+					<el-menu-item index="3" id="gCeLiang" onClick="OnCreateCeLiang()">
+						<i class="icon iconfont icon-_celiang-"></i>
+						<span>{{ $t("Language.Measure")}}</span>
+					</el-menu-item>
+					<el-submenu index="4" id="gXianShi">
+						<template slot="title">
+							<i class="el-icon-view"></i>
+							<span>{{ $t("Language.Show")}}</span>
+						</template>
+						<el-submenu index="4-0">
+							<template slot="title">显示模式</template>
+								<el-menu-item index="4-1-1">
+									<el-radio v-model="header.showLable.wallLine" label="1" onclick="mParamSystemDlg.OnWireframe(false);mParamSystemDlg.OnMaterial(true);">材质模式</el-radio>
+								</el-menu-item>
+							<el-menu-item index="4-1-2">
+								<el-radio v-model="header.showLable.wallLine" label="2" onclick="mParamSystemDlg.OnWireframe(true);mParamSystemDlg.OnMaterial(false);">线框模式</el-radio>
+							</el-menu-item>
+							<el-menu-item index="4-1-3">
+								<el-radio v-model="header.showLable.wallLine" label="3" onclick="mParamSystemDlg.OnWireframe(true);mParamSystemDlg.OnMaterial(true);">材质+线框模式</el-radio>
+							</el-menu-item>							
+						</el-submenu>	
+						<el-submenu index="4-1">
+							<template slot="title">{{ $t("Language.DimensionLin")}}</template>
+							<el-menu-item index="4-1-1">
+								<el-radio v-model="header.showLable.wallLine" label="1">{{ $t("Language.WallMiddleLine")}}</el-radio>
+							</el-menu-item>
+							<el-menu-item index="4-1-2">
+								<el-radio v-model="header.showLable.wallLine" label="2">{{ $t("Language.Position")}}</el-radio>
+							</el-menu-item>
+							<el-menu-item index="4-1-3">
+								<el-radio v-model="header.showLable.wallLine" label="3">{{ $t("Language.NoDisplay")}}</el-radio>
+							</el-menu-item>
+						</el-submenu>
+				     	<el-submenu index="4-9">
+							<template slot="title">窗口打开方式</template>	
+							<el-menu-item index="4-9-1">
+				     			<el-checkbox v-model="header.showLable.check_ChildRoam3D">新窗口打开漫游</el-checkbox>
+				     		</el-menu-item>	
+				     		<el-menu-item index="4-9-2">
+				     			<el-checkbox v-model="header.showLable.check_ChildRender">新窗口打开渲染</el-checkbox>
+				     		</el-menu-item>
+				     		<el-menu-item index="4-9-3">
+				     			<el-checkbox v-model="header.showLable.check_ChildMat3D">新窗口打开材质替换</el-checkbox>
+				     		</el-menu-item>				     		
+				  		</el-submenu>						
+						<el-menu-item index="4-2">
+							<el-checkbox v-model="header.showLable.check_coord"
+								onchange="mParamSystemDlg.OnShowCoord()">{{ $t("Language.Coord")}}</el-checkbox>
+						</el-menu-item>
+						<el-menu-item index="4-3">
+							<el-checkbox v-model="header.showLable.check_label" onclick="mParamSystemDlg.OnShowLabel()">
+								{{ $t("Language.Size")}}</el-checkbox>
+						</el-menu-item>
+						<el-menu-item index="4-4">
+							<el-checkbox v-model="header.showLable.check_Furniture"
+								onclick="mParamSystemDlg.OnShowFurniture()">{{description.furnitureName}}</el-checkbox>
+						</el-menu-item>
+						<el-menu-item index="4-5">
+							<el-checkbox v-model="header.showLable.check_RoomName"
+								onchange="mParamSystemDlg.OnShowRoomName()">{{ $t("Language.RoomName")}}</el-checkbox>
+						</el-menu-item>
+						<el-menu-item index="4-6">
+							<el-checkbox v-model="header.showLable.check_TransparentWall"
+								onclick="mParamSystemDlg.OnShowTransparentWall()">{{ $t("Language.Transparent")}}
+							</el-checkbox>
+						</el-menu-item>
+				     	<el-menu-item index="4-7">
+				     		<el-checkbox v-model="header.showLable.check_TransparentWall1" 
+				     			onclick="mParamSystemDlg.OnShowTransparentWall_In()">内墙透明</el-checkbox>
+				    	</el-menu-item>
+						<el-menu-item index="4-8">
+				     		<el-checkbox v-model="header.showLable.check_ObjectAdsorption">{{ $t("Language.ObjectAdsorption")}}</el-checkbox>
+				     	</el-menu-item>
+
+						<el-menu-item index="4-11">
+				     		<el-checkbox v-model="header.showLable.check_LockAll" onchange="mHouseClass.mFurnitureClass.OnLockAll()">锁定所有物体</el-checkbox>
+				     	</el-menu-item>	
+				     	
+				     	<el-menu-item index="4-12">
+				     		<el-checkbox v-model="header.showLable.check_DelWall" >连续删除墙体</el-checkbox>
+				     	</el-menu-item>	
+
+					</el-submenu>
+					<el-submenu index="5" id="gZhuShou">
+						<template slot="title">
+							<i class="icon iconfont icon-yingyong2"></i>
+							<span>{{ $t("Language.Assistant")}}</span>
+						</template>
+						<el-submenu index="5-1" v-if="!accountType==1">
+							<template slot="title">{{ $t("Language.HouseTypeTransform")}}</template>
+							<el-menu-item index="5-1-1" onclick="mHouseClass.HorizontalMirror()">{{ $t("Language.HorizontalMirror")}}</el-menu-item>
+							<el-menu-item index="5-1-2" onclick="mHouseClass.VerticalMirror()">{{ $t("Language.VerticalMirror")}}</el-menu-item>
+							<el-menu-item index="5-1-3" onclick="mHouseClass.Rotate_Mirror()">90° 旋转</el-menu-item>
+						</el-submenu>
+						<!--<el-menu-item index="5-2" v-if="!accountType==1">{{ $t("Language.Comment")}}</el-menu-item>-->
+						<el-menu-item index="5-3" onClick="OnpenupdateLogs()">更新日志</el-menu-item>
+						<el-menu-item index="5-3" @click="dialogTableVisible=true">错误日志</el-menu-item>
+						<el-menu-item index="5-3-1" onClick="OpenCharts()">系统功能图</el-menu-item>
+						<el-menu-item index="5-4" onClick="Onpenshortcutkeys()">{{ $t("Language.ShortcutKey")}}
+						</el-menu-item>
+						<el-menu-item index="5-5" onClick="OnpenGlobalSettings()">{{ $t("Language.GlobalSetting")}}
+						</el-menu-item>
+						<el-menu-item index="5-8" onclick="OnClickFullScreen(document.documentElement)">
+							{{ $t("Language.Fullscreen")}}</el-menu-item>
+						<el-submenu index="5-10">
+							<template slot="title">{{ $t("Language.Language")}}</template>
+							<el-menu-item index="5-10-1" onclick="ChooseLanguage('vi')">{{ $t("Language.Vietnam")}}
+							</el-menu-item>
+							<el-menu-item index="5-10-2" onclick="ChooseLanguage('zh')">{{ $t("Language.Chinese")}}
+							</el-menu-item>
+							<el-menu-item index="5-10-3" onclick="ChooseLanguage('en')">{{ $t("Language.English")}}
+							</el-menu-item>
+						</el-submenu>
+					</el-submenu>
+
+					<el-submenu index="8">
+						<template slot="title">
+							<i class="icon iconfont icon-qingkong"></i>
+							<span>{{ $t("Language.ClearAll")}}</span>
+						</template>
+						<el-menu-item index="8-1" onclick="OnClear()">{{ $t("Language.ClearCanvas")}}</el-menu-item>
+						<el-menu-item index="8-2" onclick="OnClearObj()">{{description.furnitureClear}}</el-menu-item>
+					</el-submenu>
+					<el-submenu index="9" v-if="!accountType==1" id="gCAD"> 
+						<template slot="title">
+							<i class="icon iconfont icon-daochu"></i>
+							<span>{{ $t("Language.Export")}}</span>
+						</template>
+						<el-menu-item index="9-1" onclick="mHouseClass.OnSave2DtoImage_old()">导出平面图</el-menu-item>
+						<el-menu-item index="9-2" onclick="mHouseClass.OnSave2DtoImage1()">带图例框导出</el-menu-item>
+						<el-menu-item index="9-3" onclick="OnExportCAD()">{{ $t("Language.ExportCAD")}}</el-menu-item>
+					</el-submenu>
+					<el-menu-item index="10" id="gRender">
+						<i class="el-icon-camera"></i>
+						<span onclick="mPluginsClass.OnSaveToRender()">渲染</span>
+					</el-menu-item>
+					<el-menu-item index="11" id="gAlbum">
+						<i class="el-icon-picture-outline"></i>
+						<span onclick="openCreate(1)">效果图</span>
+					</el-menu-item>
+				</el-menu>
+			</div>    				
+			<div class="header-help" >	
+				<div class="header-help-icon" onclick="mParamSystemDlg.ShowBackend()">
+					<i class="icon iconfont icon-bangzhu"></i>
+					<span style="font-size:14px" class="text-color">后台管理</span>
+				</div>				
+				<div class="header-help-icon" onclick="mParamSystemDlg.ShowHelp()">
+					<i class="icon iconfont icon-bangzhu"></i>
+					<span style="font-size:14px" class="text-color">{{ $t("Language.HelpMenu")}}</span>
+				</div>
+			</div>
+		</div>
+
+		<div class="cont-main">
+			<div class="canvas">
+				<!--3D-->
+				<div id="container" style="top:0px;left:0px;width:100%;height:100%;position:absolute;cursor:pointer;">
+					<div id="containerChild" style="position: relative;z-index:-9999;"></div>
+				</div>
+				<iframe id="container1" style="top:0px;left:0px;width:100%;height:100%;position:absolute;cursor:pointer;">
+				</iframe>
+			</div>
+			<!-- 创建 样板间 模型库 展开界面 -->
+			<div id="mouse-left" onmouseover="YiDongHuaBu_KaiShi(4)" onmouseout="YiDongHuaBu_JieShu()" style="top:0px;left:0px;width:40px;height:100%;position:absolute;display:none;" ></div>			
+			<div id="mouse-top" onmouseover="YiDongHuaBu_KaiShi(1)" onmouseout="YiDongHuaBu_JieShu()" style="top:0px;left:0px;width:100%;height:40px;position:absolute;display:none;" ></div>
+			<div id="mouse-bottom" onmouseover="YiDongHuaBu_KaiShi(2)" onmouseout="YiDongHuaBu_JieShu()" style="bottom:0px;left:0px;width:100%;height:40px;position:absolute;display:none;" ></div>						
+			<div id="mouse-right" onmouseover="YiDongHuaBu_KaiShi(3)" onmouseout="YiDongHuaBu_JieShu()" style="top:0px;right:0px;width:40px;height:100%;position:absolute;display:none;" ></div>
+			<div class="main-left" showMain=".main-left-min">
+				<div class="main-header-title">
+					<span id="m2DTab" class="button-line">{{ $t("Language.Create")}}</span>
+					<span id="mRoomTab">{{ $t("Language.PrototypeRoom")}}</span>
+					<span id="mModelingTab">{{ $t("Language.ModelLibrary")}}</span>
+				</div>
+				<div class="main-body">	
+					<!-- 创建设计界面 -->
+					<div class="create-cont" style="display: block;">
+						<el-scrollbar style="height:100%;" id="mTool">
+						<!--<div class="create-cont-title">
+							{{ $t("Language.CreateHouseType")}}
+						</div>-->														
+						</el-scrollbar>
+					</div>
+					<!-- 样板间设计界面 -->
+					<div class="templateRoom" style="display: none;">
+						<div class="template-listInfo-typ">							<!-- <div class="pageInfo"><span>总页数:</span><span class="contInt"></span><span>当前页:</span><span class="pageInt">5555</span></div> -->
+							<el-scrollbar style="height:100%;">
+								<div class="template-scrollbar-cont">
+								</div>
+							</el-scrollbar>
+							<div class="pagechang"><span class="top">上一页</span><input id="pageInput"><span class="next">下一页</span></div>
+						</div>
+					</div>
+					<!-- 模型库设计界面 -->
+					<div class="modelBase clearfloat" style="display: none;">
+						<!-- 选择分类 -->
+						<div class="modelBase-left_block">
+							<el-scrollbar style="height:100%;">
+								<ul class="modelBase-left" id="mListUI">
+									<li id='99' hide="0"><span>{{ $t("Language.My")}}</span> <i class="el-icon-arrow-down"></i>
+										<ul class="modelBase-my-item" autoHeight="184">
+											<li id="0">{{ $t("Language.Favorite")}}</li>
+											<li id="1">{{ $t("Language.Hided")}}</li>
+										</ul>
+									</li>
+									<li id="501" hide="1" class="modelBase_link">企业库</li>
+									<li id="502" hide="1">个人库</li>
+
+								</ul>
+							</el-scrollbar>
+						</div>
+
+						<!-- 企业库 -->
+						<div class="modelBase-right" id="qiyeku_model">
+							<div class="template-search" style="padding:10px 10px;">
+								<div class="qiyeku_model-buttom">
+									<el-button type="primary">{{ $t("Language.Model")}}</el-button>
+									<el-button>{{ $t("Language.Material")}}</el-button>
+								</div>
+								<div class="qiyeku_seach">
+									<el-input placeholder="查找" v-model="modelQYK.searchInput" @change="qyk_searchInputChange">
+										<i slot="suffix" class="el-input__icon el-icon-search"></i>
+									</el-input>
+									<el-button icon="el-icon-s-unfold"></el-button>
+								</div>
+							</div>
+							<div class="mpPageCount clearfix">
+								<div>&nbsp;{{ $t("Language.First")}}<span class="topPageNum"
+										id="qiyekuPageNum"></span>&nbsp;{{ $t("Language.Page")}}&nbsp;/&nbsp;{{ $t("Language.Total")}}&nbsp;
+									<span class="pageAccount"
+										id="qiyekuPageAccount"></span>&nbsp;{{ $t("Language.Page")}}&nbsp;
+								</div>
+								<div>&nbsp;{{ $t("Language.Total")}}<span class="mpPicNumber"
+										id="qiyekuPicNumber"></span>&nbsp;{{ $t("Language.Records")}}</div>
+							</div>
+							<div class="template-listInfo">
+								<el-scrollbar style="height:100%;">
+									<ul class=" clearfloat mpLists_qiyeku"></ul>
+								</el-scrollbar>
+							</div>
+							<div class="mpBottom clearfloat">
+								<span onClick="setPager_qiyeku(0)">&nbsp;{{ $t("Language.FirstPage")}}&nbsp;</span>
+								<span onClick="setPager_qiyeku(qyk_data.curPage - 1)">
+									&nbsp;{{ $t("Language.PrevPage")}}&nbsp;</span>
+								<span onClick="setPager_qiyeku(qyk_data.curPage + 1)">
+									&nbsp;{{ $t("Language.NextPage")}}&nbsp;</span>
+								<input type="text" class="pageNumber" id="ObjPageNumberqiyeku">
+								<span
+									onClick="setPager_qiyeku(ObjPageNumberqiyeku.value - 1)">&nbsp;{{ $t("Language.Goto")}}</span>
+							</div>
+						</div>
+						<!-- 企业库 -->
+
+						<!-- 个人库 -->
+						<div class="modelBase-right" id="gerenku_model">
+							<div class="template-search" style="padding:10px 10px;">
+								<div class="gerenku_model-buttom">
+									<el-button type="primary">{{ $t("Language.Model")}}</el-button>
+									<el-button>{{ $t("Language.Material")}}</el-button>
+								</div>
+								<div class="gerenku_seach">
+									<el-input placeholder="查找" v-model="modelGRK.searchInput" @change="grk_searchInputChange">
+										<i slot="suffix" class="el-input__icon el-icon-search"></i>
+									</el-input>
+									<el-button icon="el-icon-s-unfold"></el-button>
+								</div>
+							</div>
+							<div class="mpPageCount clearfix">
+								<div>&nbsp;{{ $t("Language.First")}}<span class="topPageNum"
+										id="gerenkuPageNum"></span>&nbsp;{{ $t("Language.Page")}}&nbsp;/&nbsp;{{ $t("Language.Total")}}&nbsp;
+									<span class="pageAccount"
+										id="gerenkuPageAccount"></span>&nbsp;{{ $t("Language.Page")}}&nbsp;
+								</div>
+								<div>&nbsp;{{ $t("Language.Total")}}<span class="mpPicNumber"
+										id="gerenkuPicNumber"></span>&nbsp;{{ $t("Language.Records")}}</div>
+							</div>
+							<div class="template-listInfo">
+								<el-scrollbar style="height:100%;">
+									<ul class=" clearfloat mpLists_gerenku"></ul>
+								</el-scrollbar>
+							</div>
+							<div class="mpBottom clearfloat">
+								<span onClick="setPager_gerenku(0)">&nbsp;{{ $t("Language.FirstPage")}}&nbsp;</span>
+								<span onClick="setPager_gerenku(grk_data.curPage - 1)">
+									&nbsp;{{ $t("Language.PrevPage")}}&nbsp;</span>
+								<span onClick="setPager_gerenku(grk_data.curPage + 1)">
+									&nbsp;{{ $t("Language.NextPage")}}&nbsp;</span>
+								<input type="text" class="pageNumber" id="ObjPageNumbergerenku">
+								<span
+									onClick="setPager_gerenku(ObjPageNumbergerenku.value - 1)">&nbsp;{{ $t("Language.Goto")}}</span>
+							</div>
+						</div>
+						<!-- 个人库 -->
+						<!-- 收藏界面 -->
+						<!-- ------------------------------------------------------------------------------------->
+						<div class="modelBase-right" id="mCollectionDlg">
+							<div class="template-search" style="padding:10px 0;">
+								<div class="modelBase-input-buttom">
+									<el-input :placeholder=$t("Language.Find") v-model="modelBase.searchInput" @change="searchInputChange">
+										<i slot="suffix" class="el-input__icon el-icon-search"></i>
+									</el-input>
+								<!--	<el-button onClick="opensBtnModel(this,'.template-input-buttom-type_1')">
+										{{ $t("Language.Filter")}}<i class="icon iconfont icon-huabanfuben"></i>
+									</el-button>-->
+								</div>
+							</div>
+							<div class="mpPageCount clearfix">
+								<div>&nbsp;{{ $t("Language.First")}}<span class="topPageNum"
+										id="CollectionageNum"></span>&nbsp;{{ $t("Language.Page")}}&nbsp;/&nbsp;{{ $t("Language.Total")}}&nbsp;
+									<span class="pageAccount"
+										id="CollectionPageAccount"></span>&nbsp;{{ $t("Language.Page")}}&nbsp;
+								</div>
+								<div>&nbsp;{{ $t("Language.Total")}}<span class="mpPicNumber"
+										id="CollectionPicNumber"></span>&nbsp;{{ $t("Language.Records")}}</div>
+							</div>
+							<div class="template-listInfo">
+								<el-scrollbar style="height:100%;">
+									<ul class=" clearfloat mpLists_Collection">
+									</ul>
+								</el-scrollbar>
+							</div>
+							<div class="mpBottom clearfloat">
+								<span onClick="setPager_Collection(0)">&nbsp;{{ $t("Language.FirstPage")}}&nbsp;</span>
+								<span onClick="setPager_Collection(curPage_Collection - 1)">
+									&nbsp;{{ $t("Language.PrevPage")}}&nbsp;</span>
+								<span onClick="setPager_Collection(curPage_Collection + 1)">
+									&nbsp;{{ $t("Language.NextPage")}}&nbsp;</span>
+								<input type="text" class="pageNumber" id="ObjPageNumberCollection">
+								<span
+									onClick="setPager_Collection(ObjPageNumberCollection.value - 1)">&nbsp;{{ $t("Language.Goto")}}</span>
+							</div>
+						</div>
+						<!--------------------------------------------------------------------------------------->
+
+						<!-- 被隐藏界面 -->
+						<!--------------------------------------------------------------------------------------->
+						<div class="modelBase-right" id="mModelHideDlg">
+							<div class="template-search" style="padding:10px 0;">
+								<div class="modelBase-input-buttom">
+									<el-button onClick="m_ParamObjDlg.AllShow()">{{ $t("Language.ShowAll")}}</el-button>
+								</div>
+							</div>
+							<div class="mpPageCount clearfix">
+								<div>&nbsp;{{ $t("Language.First")}}<span class="topPageNum"
+										id="ModelHideageNum"></span>&nbsp;{{ $t("Language.Page")}}&nbsp;/&nbsp;{{ $t("Language.Total")}}&nbsp;
+									<span class="pageAccount"
+										id="ModelHidePageAccount"></span>&nbsp;{{ $t("Language.Page")}}&nbsp;
+								</div>
+								<div>&nbsp;{{ $t("Language.Total")}}<span class="mpPicNumber"
+										id="ModelHidePicNumber"></span>&nbsp;{{ $t("Language.Records")}}</div>
+							</div>
+							<div class="template-listInfo">
+								<el-scrollbar style="height:100%;">
+									<ul class=" clearfloat mpLists_ModelHide">
+									</ul>
+								</el-scrollbar>
+							</div>
+							<div class="mpBottom clearfloat">
+								<span onClick="setPager_ModelHide(0)">&nbsp;{{ $t("Language.FirstPage")}}&nbsp;</span>
+								<span onClick="setPager_ModelHide(curPage_ModelHide - 1)">
+									&nbsp;{{ $t("Language.PrevPage")}}&nbsp;</span>
+								<span onClick="setPager_ModelHide(curPage_ModelHide + 1)">
+									&nbsp;{{ $t("Language.NextPage")}}&nbsp;</span>
+								<input type="text" class="pageNumber" id="ObjPageNumberModelHide">
+								<span
+									onClick="setPager_ModelHide(ObjPageNumberModelHide.value - 1)">&nbsp;{{ $t("Language.Goto")}}</span>
+							</div>
+						</div>
+						<!--------------------------------------------------------------------------------------->
+						<!-- 被隐藏界面 -->
+
+						<div class="modelBaseInformation">
+							<div class="goosInforImg">
+							</div>
+							<div class="goosInforTitle">
+								<span>1</span>
+							</div>
+							<div class="goosInforText">
+								<div class="itemList-title">
+									<p>详细信息</p>
+								</div>
+							</div>
+						</div>
+
+					</div>
+				</div>
+				<div class="shrinkBar">
+					<span class="el-icon-d-arrow-left"></span>
+				</div>
+			</div>
+			<!-- 创建 样板间 模型库 收起界面 -->
+			<div class="main-left-min" showMain=".main-left" style="display: none">
+				<div class="apartmentNavigation-min-title">
+					<i class="el-icon-d-arrow-right"></i>
+				</div>
+				<div class="apartmentNavigation-min-body">
+					<i class="icon iconfont icon-yingyong2"></i>
+				</div>
+			</div>
+
+			<!-- 视图切换界面加系统设计与预算 -->
+			<div class="floatingAttribute clearfloat">
+				<!--显示模式-->
+    			<!--<div id="pattern">显示模式</div>-->
+				<div class="viewsSwitching">
+					<ul class="viewsSwitching-ul clearfloat" id="viewsSwitching-block">
+						<li class="viewsSwitching-link" id="m2D" onclick="OnShow2D()">{{ $t("Language.Plan")}}</li>
+						<li id="m3D" onclick="OnShow3D()">3D</li>
+						<!--<li id="topSurface" onclick="OnShowTopSurface()">{{ $t("Language.TopSurface")}}</li>-->
+						<li  class="roam"  onclick="mPluginsClass.OnRoam()">{{ $t("Language.Roam")}}</li>
+					</ul>
+					<div class="viewsSwitching-line"></div>
+				</div>
+				<div class="viewsSwitching budget system-design">
+					<ul class="viewsSwitching-ul clearfloat">
+						<li class="budget">
+							<span onclick="addDatas(0)">{{ $t("Language.Budget")}}</span>
+						</li>
+					</ul>
+				</div>
+			</div>
+
+			<!-- 户型导航展开状态 -->
+			<div class="apartmentNavigation" showMain=".apartmentNavigation-min" id="mMapFrame">
+				<div class="rendering-title">
+					<i class="el-icon-d-arrow-right"></i>
+					<p>{{ $t("Language.HouseTypeNavigation")}}</p>
+				</div>
+				<div class="rendering-body">
+
+					<div class="rendering-video" id="mMap">
+						<!--<i class="icon iconfont icon-fangda"></i>-->
+					</div>
+
+					<div class="rendering-btn">
+						<el-button onclick="mFloorCameraClass.OnShowAllRoom();">{{ $t("Language.CompleteHouseType")}}
+						</el-button>
+					</div>
+				</div>
+			</div>
+
+			<!-- 户型导航展开收起 -->
+			<div class="apartmentNavigation-min" showMain=".apartmentNavigation" style="display: none;">
+				<div class="apartmentNavigation-min-title">
+					<i class="el-icon-d-arrow-left"></i>
+				</div>
+				<div class="apartmentNavigation-min-body">
+					<i class="icon iconfont icon-kouzhang"></i>
+				</div>
+			</div>
+
+			<!-- 属性编辑界面 -->
+			<!-- 家具 -->
+			<div class="attributeInterface" id="furniture">
+				<div class="attrTitle">
+					<span>模型</span>
+					<i class="el-icon-close attrClose"></i>
+				</div>
+				<div class="attrBody">
+					<el-scrollbar style="height:100%">
+						<div class="itemList-title">
+							<p>{{ $t("Language.Attribute")}}</p>
+							<span class="el-icon-arrow-up"></span>
+						</div>
+						<div class="itemList-imgList clearfloat">
+							
+							<div class="listSlider" v-if="attributeInterface.furniture.checked==true">
+								<!-- 缩放 -->
+								<span class="demonstration">缩放</span>
+								<div class="sliderBlock">
+									<el-slider v-model="attributeInterface.furniture.Scaling.int"
+										:min="attributeInterface.furniture.Scaling.min"
+										:max="attributeInterface.furniture.Scaling.max"
+										:disabled="attributeInterface.furniture.Scaling.disabled"
+										@input="furniture_Scaling"></el-slider>
+								</div>
+								<div class="sliderInputNum">
+									<el-input-number v-model="attributeInterface.furniture.Scaling.int"
+										controls-position="right" size="mini"
+										:min="attributeInterface.furniture.Scaling.min"
+										:max="attributeInterface.furniture.Scaling.max"
+										:disabled="attributeInterface.furniture.Scaling.disabled"
+										@input="furniture_Scaling"></el-input-number>
+								</div>
+								<span class="demonstration">%</span>
+							</div>
+
+							<div class="listSlider" v-if="attributeInterface.furniture.checked==false">
+								<!-- 长度 -->
+								<span class="demonstration">{{ $t("Language.Length")}}</span>
+								<div class="sliderBlock">
+									<el-slider v-model="attributeInterface.furniture.length.int"
+										:min="attributeInterface.furniture.length.min"
+										:max="attributeInterface.furniture.length.max"
+										:disabled="attributeInterface.furniture.length.disabled"
+										@input="furniture_lenght"></el-slider>
+								</div>
+								<div class="sliderInputNum">
+									<el-input-number v-model="attributeInterface.furniture.length.int"
+										controls-position="right" size="mini"
+										:min="attributeInterface.furniture.length.min"
+										:max="attributeInterface.furniture.length.max"
+										:disabled="attributeInterface.furniture.length.disabled"
+										@input="furniture_lenght"></el-input-number>
+								</div>
+								<span class="demonstration">mm</span>
+							</div>
+
+							<div class="listSlider" v-if="attributeInterface.furniture.checked==false">
+								<!-- 宽度 -->
+								<span class="demonstration">{{ $t("Language.Width")}}</span>
+								<div class="sliderBlock">
+									<el-slider v-model="attributeInterface.furniture.width.int"
+										:min="attributeInterface.furniture.width.min"
+										:max="attributeInterface.furniture.width.max"
+										:disabled="attributeInterface.furniture.width.disabled"
+										@input="furniture_width"></el-slider>
+								</div>
+								<div class="sliderInputNum">
+									<el-input-number v-model="attributeInterface.furniture.width.int"
+										controls-position="right" size="mini"
+										:min="attributeInterface.furniture.width.min"
+										:max="attributeInterface.furniture.width.max"
+										:disabled="attributeInterface.furniture.width.disabled"
+										@input="furniture_width"></el-input-number>
+								</div>
+								<span class="demonstration">mm</span>
+							</div>
+
+							<div class="listSlider" v-if="attributeInterface.furniture.checked==false">
+								<!-- 高度 -->
+								<span class="demonstration">{{ $t("Language.Height")}}</span>
+								<div class="sliderBlock">
+									<el-slider v-model="attributeInterface.furniture.height.int"
+										:min="attributeInterface.furniture.height.min"
+										:max="attributeInterface.furniture.height.max"
+										:disabled="attributeInterface.furniture.height.disabled"
+										@input="furniture_height"></el-slider>
+								</div>
+								<div class="sliderInputNum">
+									<el-input-number v-model="attributeInterface.furniture.height.int"
+										controls-position="right" size="mini"
+										:min="attributeInterface.furniture.height.min"
+										:max="attributeInterface.furniture.height.max"
+										:disabled="attributeInterface.furniture.height.disabled"
+										@input="furniture_height"></el-input-number>
+								</div>
+								<span class="demonstration">mm</span>
+							</div>
+
+							<div class="listSlider">
+								<!-- 角度 -->
+								<span class="demonstration">{{ $t("Language.Angle")}}</span>
+								<div class="sliderBlock">
+									<el-slider v-model="attributeInterface.furniture.angle.int"
+										:min="attributeInterface.furniture.angle.min"
+										:max="attributeInterface.furniture.angle.max"
+										:disabled="attributeInterface.furniture.angle.disabled"
+										:step="5"
+										@input="furniture_angle"></el-slider>
+								</div>
+								<div class="sliderInputNum">
+									<el-input-number v-model="attributeInterface.furniture.angle.int"
+										controls-position="right" size="mini"
+										:min="attributeInterface.furniture.angle.min"
+										:max="attributeInterface.furniture.angle.max"
+										:disabled="attributeInterface.furniture.angle.disabled"
+										@input="furniture_angle"></el-input-number>
+								</div>
+								<span class="demonstration">度</span>
+							</div>
+
+							<div class="listSlider">
+								<!-- 离地 -->
+								<span class="demonstration">{{ $t("Language.TerrainClearance")}}</span>
+								<div class="sliderBlock">
+									<el-slider v-model="attributeInterface.furniture.groundLevel.int"
+										:min="attributeInterface.furniture.groundLevel.min"
+										:max="attributeInterface.furniture.groundLevel.max"
+										:disabled="attributeInterface.furniture.groundLevel.disabled"
+										@input="furniture_groundLevel"></el-slider>
+								</div>
+								<div class="sliderInputNum">
+									<el-input-number v-model="attributeInterface.furniture.groundLevel.int"
+										controls-position="right" size="mini"
+										:min="attributeInterface.furniture.groundLevel.min"
+										:max="attributeInterface.furniture.groundLevel.max"
+										:disabled="attributeInterface.furniture.groundLevel.disabled"
+										@input="furniture_groundLevel"></el-input-number>
+								</div>
+								<span class="demonstration">mm</span>
+							</div>
+							<div style="margin-top: 15px;" class="floor-attibute">
+								<span class="demonstration1">楼层属性</span>
+								<el-select v-model="Obj_floorValue" placeholder="请选择" style="width:100px;height:30px" @change="m_ParamObjDlg.OnChangeFloor()">
+								    <el-option
+								      v-for="item in floor"
+								      :key="item.value"
+								      :label="item.label"
+								      :value="item.value">
+								    </el-option>
+								</el-select>
+							</div>
+							<div class="uniformScaling justify-space" style="margin-top: 15px;">
+								<el-checkbox v-model="attributeInterface.furniture.checked" @change="furnitureChecked_Scaling">
+									{{ $t("Language.GeometricScaling")}}</el-checkbox>
+								<el-checkbox v-model="attributeInterface.furniture.locking" @change="m_ParamObjDlg.OnChangeLocking()">锁定</el-checkbox>	
+								<el-button plain onclick="m_ParamObjDlg.OnReset()">{{ $t("Language.Reset")}}</el-button>
+							</div>
+							<el-button size="mini" style="padding: 10px 10px;margin-left:10px;margin-bottom: 5px;" onclick="m_ParamObjDlg.Copy(1)">后复制</el-button>
+							<el-button size="mini" style="padding: 10px 10px;margin-left: 0px;margin-bottom: 5px;" onclick="m_ParamObjDlg.Copy(0)">前复制</el-button>
+							<el-button size="mini" style="padding: 10px 10px;margin-left: 0px;margin-bottom: 5px;" onclick="m_ParamObjDlg.Copy(3)">上复制</el-button>
+							<el-button size="mini" style="padding: 10px 10px;margin-left: 0px;margin-bottom: 5px;" onclick="m_ParamObjDlg.Copy(2)">下复制</el-button>
+							
+						</div>
+
+						<!-- 舞台灯设置  --->
+						<div class="md-itemList wutai-light">
+							<div class="itemList-title">
+								<p>舞台灯光</p>
+								<span class="el-icon-arrow-down"></span>
+							</div>
+							<div class="itemList-imgList clearfloat">
+								<div class="GlobalSettings-body-left-item-2">
+									<el-checkbox v-model="attributeInterface.furniture.stageLight_checked" @change="m_ParamObjDlg.OnUseStageLight()">启用</el-checkbox>
+								</div>
+								<!-- 聚光区/光束 -->
+								<div class="listSlider">
+									<span class="demonstration">内光圈</span>
+									<div class="sliderBlock">
+										<el-slider v-model="attributeInterface.furniture.light_hotspot.int"
+												   :min="attributeInterface.furniture.light_hotspot.min"
+												   :max="attributeInterface.furniture.light_hotspot.max"
+												   :disabled="attributeInterface.furniture.light_hotspot.disabled"
+												   @input="furniture_light_hotspot"></el-slider>
+									</div>
+									<div class="sliderInputNum">
+										<el-input-number v-model="attributeInterface.furniture.light_hotspot.int"
+														 controls-position="right" size="mini"
+														 :min="attributeInterface.furniture.light_hotspot.min"
+														 :max="attributeInterface.furniture.light_hotspot.max"
+														 :disabled="attributeInterface.furniture.light_hotspot.disabled"
+														 @input="furniture_light_hotspot"></el-input-number>
+									</div>
+									<span class="demonstration"></span>
+								</div>
+
+								<!-- 衰减区/区域 -->
+								<div class="listSlider">
+									<span class="demonstration">外光圈</span>
+									<div class="sliderBlock">
+										<el-slider v-model="attributeInterface.furniture.light_fallsize.int"
+												   :min="attributeInterface.furniture.light_fallsize.min"
+												   :max="attributeInterface.furniture.light_fallsize.max"
+												   :disabled="attributeInterface.furniture.light_fallsize.disabled"
+												   @input="furniture_light_fallsize"></el-slider>
+									</div>
+									<div class="sliderInputNum">
+										<el-input-number v-model="attributeInterface.furniture.light_fallsize.int"
+														 controls-position="right" size="mini"
+														 :min="attributeInterface.furniture.light_fallsize.min"
+														 :max="attributeInterface.furniture.light_fallsize.max"
+														 :disabled="attributeInterface.furniture.light_fallsize.disabled"
+														 @input="furniture_light_fallsize"></el-input-number>
+									</div>
+									<span class="demonstration"></span>
+								</div>
+
+								<!-- 灯光强度 -->
+								<div class="listSlider">
+									<span class="demonstration">光强度</span>
+									<div class="sliderBlock">
+										<el-slider v-model="attributeInterface.furniture.light_intensity.int"
+												   :min="attributeInterface.furniture.light_intensity.min"
+												   :max="attributeInterface.furniture.light_intensity.max"
+												   :disabled="attributeInterface.furniture.light_intensity.disabled"
+												   @input="furniture_light_intensity"></el-slider>
+									</div>
+									<div class="sliderInputNum">
+										<el-input-number v-model="attributeInterface.furniture.light_intensity.int"
+														 controls-position="right" size="mini"
+														 :min="attributeInterface.furniture.light_intensity.min"
+														 :max="attributeInterface.furniture.light_intensity.max"
+														 :disabled="attributeInterface.furniture.light_intensity.disabled"
+														 @input="furniture_light_intensity"></el-input-number>
+									</div>
+									<span class="demonstration"></span>
+								</div>
+
+								<!-- X轴 -->
+								<div class="listSlider">
+									<span class="demonstration">X轴</span>
+									<div class="sliderBlock">
+										<el-slider v-model="attributeInterface.furniture.Xaxis.int"
+												   :min="attributeInterface.furniture.Xaxis.min"
+												   :max="attributeInterface.furniture.Xaxis.max"
+												   :disabled="attributeInterface.furniture.Xaxis.disabled"
+												   @input="furniture_Xaxis"></el-slider>
+									</div>
+									<div class="sliderInputNum">
+										<el-input-number v-model="attributeInterface.furniture.Xaxis.int"
+														 controls-position="right" size="mini"
+														 :min="attributeInterface.furniture.Xaxis.min"
+														 :max="attributeInterface.furniture.Xaxis.max"
+														 :disabled="attributeInterface.furniture.Xaxis.disabled"
+														 @input="furniture_Xaxis"></el-input-number>
+									</div>
+									<span class="demonstration"></span>
+								</div>
+
+								<!-- Y轴 -->
+								<div class="listSlider">
+									<span class="demonstration">Y轴</span>
+									<div class="sliderBlock">
+										<el-slider v-model="attributeInterface.furniture.Yaxis.int"
+												   :min="attributeInterface.furniture.Yaxis.min"
+												   :max="attributeInterface.furniture.Yaxis.max"
+												   :disabled="attributeInterface.furniture.Yaxis.disabled"
+												   @input="furniture_Yaxis"></el-slider>
+									</div>
+									<div class="sliderInputNum">
+										<el-input-number v-model="attributeInterface.furniture.Yaxis.int"
+														 controls-position="right" size="mini"
+														 :min="attributeInterface.furniture.Yaxis.min"
+														 :max="attributeInterface.furniture.Yaxis.max"
+														 :disabled="attributeInterface.furniture.Yaxis.disabled"
+														 @input="furniture_Yaxis"></el-input-number>
+									</div>
+									<span class="demonstration"></span>
+								</div>
+
+								<!-- 灯光颜色 -->
+								<div class="block">
+										<span class="demonstration" style="margin-left:10px; width: 100px; display:flex; align-items:center;">光颜色
+											<el-color-picker v-model="attributeInterface.furniture.stageLightColor" :disabled="!attributeInterface.furniture.stageLight_checked"
+															 color-format="rgb" @change="m_ParamObjDlg.OnChangeLightColor()"></el-color-picker>
+										</span>
+								</div>
+
+								<!-- 灯光样式-->
+								<div class="body-list-item">
+									<div class="body-item-title" style="pointer-events: none;font-size: 12px;color: #666;margin-left: 10px;">灯光样式</div>
+									<ul class="body-item-list-img clearfloat" style="padding: 10px;">
+										<li>
+											<img id="mLightStyle1" src='img/projector_map/0.jpg' data-value='0' alt="">
+										</li>
+										<li>
+											<img id="mLightStyle2" src='img/projector_map/1.jpg'  data-value='1' alt="">
+										</li>
+										<li>
+											<img id="mLightStyle3" src='img/projector_map/2.jpg' data-value='2' alt="">
+										</li>
+                                        <li>
+                                            <img id="mLightStyle4" src='img/projector_map/3.jpg'  data-value='3' alt="">
+                                        </li>
+                                        <li>
+                                            <img id="mLightStyle5" src='img/projector_map/4.jpg' data-value='4' alt="">
+                                        </li>
+									</ul>
+								</div>
+
+							</div>
+						</div>
+						<!--end 舞台灯设置--->
+						<div class="md-itemList">
+							<div class="itemList-title">
+								<p>{{ $t("Language.GoodsInDetail")}}</p>
+								<span class="el-icon-arrow-up"></span>
+							</div>
+							<div class="itemList-imgList clearfloat">
+								<div class="goodsDetail">
+									<div class="goodsImg"><img src="" alt=""></div>
+									<div class="goosNmaes">
+										<p>{{ $t("Language.ProductName")}}</p>
+										<p>{{ $t("Language.Size")}}<span>1.7x0.8x0.9</span>(m)</p>
+										<!-- <button><i class=""></i></button> -->
+										<i class="el-icon-info goodsInfo" toptip='funtion'></i>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div class="md-itemList" style="position: relative;">
+							<el-button type="text" style="position:absolute;top: -1px;left:87px;z-index: 10;">
+								{{ $t("Language.PrevPage")}}</el-button>
+							<el-button type="text" style="position:absolute;top: -1px;left:107px;z-index: 10;">
+								{{ $t("Language.NextPage")}}</el-button>
+							<div class="itemList-title">
+								<p>{{ $t("Language.Match")}}</p>
+								<span class="el-icon-arrow-up"></span>
+							</div>
+							<ul class="itemList-imgList clearfloat itemList-goodList">
+
+							</ul>
+						</div>
+
+					</el-scrollbar>
+				</div>
+
+				<div class="detailedInformation">
+					<div class="goosInforImg"></div>
+					<div class="goosInforTitle">
+						<img src="img/Apartment_02.png" alt=""><span> {{ $t("Language.ProductName")}}</span>
+					</div>
+					<div class="goosInforText">
+						<div class="itemList-title">
+							<p>{{ $t("Language.Detail")}}</p>
+						</div>
+						<p></p>
+					</div>
+					<div class="goodsInfoPlay clearfloat" style="display:none">
+						<p>$<span>1000.0</span>/个</p>
+						<button onclick="GotoTaoBao();">{{ $t("Language.MyBuy")}}</button>
+					</div>
+				</div>
+			</div>
+			<!-- 家具 -->
+
+			<!-- 墙 -->
+			<div class="attributeInterface" id="wall" style="display: block;">
+				<div class="attrTitle">
+					<span>{{ $t("Language.Wall")}}</span>
+					<i class="el-icon-close attrClose"></i>
+				</div>
+				<div class="attrBody">
+					<div class="itemList-title">
+						<p>墙</p>
+						<span class="el-icon-arrow-up"></span>
+					</div>
+					<div class="itemList-imgList clearfloat">
+						<div class="listSlider">
+							
+							<span class="demonstration">高度</span>
+							<div class="sliderBlock">
+								<el-slider v-model="attributeInterface.wall.height.int"
+									:min="attributeInterface.wall.height.min" :max="attributeInterface.wall.height.max"
+									:disabled="attributeInterface.wall.height.disabled" @input='WallWidth'></el-slider>
+							</div>
+							<div class="sliderInputNum">
+								<el-input-number v-model="attributeInterface.wall.height.int" controls-position="right"
+									size="mini" :min="attributeInterface.wall.height.min"
+									:max="attributeInterface.wall.height.max"
+									:disabled="attributeInterface.wall.height.disabled" @input='WallWidth'></el-input-number>
+							</div>
+							<span class="demonstration">mm</span>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- 墙 -->
+
+			<!-- 窗 -->
+			<div class="attributeInterface" id="window">
+				<div class="attrTitle">
+					<span></span>
+					<i class="el-icon-close attrClose"></i>
+				</div>
+				<div class="attrBody">
+					<el-scrollbar style="height:100%">
+						<div class="itemList-title">
+							<p>{{ $t("Language.Attribute")}}</p>
+							<span class="el-icon-arrow-up"></span>
+						</div>
+						<div class="itemList-imgList clearfloat">
+							<el-radio-group v-model="attributeInterface.window.radio">
+								<el-radio-button :label="0">{{ $t("Language.Window")}}</el-radio-button>
+								<el-radio-button :label="1">{{ $t("Language.FrenchWindow")}}</el-radio-button>
+								<el-radio-button :label="2">{{ $t("Language.BayWindow")}}</el-radio-button>
+							</el-radio-group>
+
+							<div class="listSlider">
+								<!-- 长度 -->
+								<span class="demonstration">{{ $t("Language.Length")}}</span>
+								<div class="sliderBlock">
+									<el-slider v-model="attributeInterface.window.length.int"
+										:min="attributeInterface.window.length.min"
+										:max="attributeInterface.window.length.max"
+										:disabled="attributeInterface.window.length.disabled" @input='windowLenght'>
+									</el-slider>
+								</div>
+								<div class="sliderInputNum">
+									<el-input-number v-model="attributeInterface.window.length.int"
+										controls-position="right" size="mini"
+										:min="attributeInterface.window.length.min"
+										:max="attributeInterface.window.length.max"
+										:disabled="attributeInterface.window.length.disabled" @input='windowLenght'>
+									</el-input-number>
+								</div>
+								<span class="demonstration">mm</span>
+							</div>
+
+							<div class="listSlider">
+								<!-- 宽度 -->
+								<span class="demonstration">{{ $t("Language.Height")}}</span>
+								<div class="sliderBlock">
+									<el-slider v-model="attributeInterface.window.height.int"
+										:min="attributeInterface.window.height.min"
+										:max="attributeInterface.window.height.max"
+										:disabled="attributeInterface.window.height.disabled" @input='windowHeight'>
+									</el-slider>
+								</div>
+								<div class="sliderInputNum">
+									<el-input-number v-model="attributeInterface.window.height.int"
+										controls-position="right" size="mini"
+										:min="attributeInterface.window.height.min"
+										:max="attributeInterface.window.height.max"
+										:disabled="attributeInterface.window.height.disabled" @input='windowHeight'>
+									</el-input-number>
+								</div>
+								<span class="demonstration">mm</span>
+							</div>
+
+							<div class="listSlider">
+								<!-- 离地 -->
+								<span class="demonstration">{{ $t("Language.TerrainClearance")}}</span>
+								<div class="sliderBlock">
+									<el-slider v-model="attributeInterface.window.groundLevel.int"
+										:min="attributeInterface.window.groundLevel.min"
+										:max="attributeInterface.window.groundLevel.max"
+										:disabled="attributeInterface.window.groundLevel.disabled"
+										@input='windowGroundLevel'></el-slider>
+								</div>
+								<div class="sliderInputNum">
+									<el-input-number v-model="attributeInterface.window.groundLevel.int"
+										controls-position="right" size="mini"
+										:min="attributeInterface.window.groundLevel.min"
+										:max="attributeInterface.window.groundLevel.max"
+										:disabled="attributeInterface.window.groundLevel.disabled"
+										@input='windowGroundLevel'></el-input-number>
+								</div>
+								<span class="demonstration">mm</span>
+							</div>
+
+							<div class="uniformScaling justify-space">
+								<div></div>
+								<el-button plain onClick="m_ParamWinDlg.Restore()">{{ $t("Language.Reset")}}</el-button>
+							</div>
+
+							<div class="md-itemList">
+								<div class="itemList-title">
+									<p>{{ $t("Language.GoodsInDetail")}}</p>
+									<span class="el-icon-arrow-up"></span>
+								</div>
+								<div class="itemList-imgList clearfloat">
+									<div class="goodsDetail">
+										<div class="goodsImg"><img src="" alt=""></div>
+										<div class="goosNmaes">
+											<p>{{ $t("Language.ProductName")}}</p>
+											<p>{{ $t("Language.Size")}}<span>1.7x0.8x0.9</span>(m)</p>
+											<i class="el-icon-info goodsInfo" toptip='window'></i>
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<div class="md-itemList" style="position: relative;">
+								<el-button type="text" style="position:absolute;top: -1px;left:87px;z-index: 10;">
+									{{ $t("Language.PrevPage")}}</el-button>
+								<el-button type="text" style="position:absolute;top: -1px;left:107px;z-index: 10;">下页
+								</el-button>
+								<div class="itemList-title">
+									<p>{{ $t("Language.Match")}}</p>
+									<span class="el-icon-arrow-up"></span>
+								</div>
+								<ul class="itemList-imgList clearfloat itemList-goodList">
+
+								</ul>
+							</div>
+						</div>
+					</el-scrollbar>
+					<div class="detailedInformation">
+						<div class="goosInforImg"></div>
+						<div class="goosInforTitle">
+							<img src="img/Apartment_02.png" alt=""><span> {{ $t("Language.ProductName")}}</span>
+						</div>
+						<div class="goosInforText">
+							<div class="itemList-title">
+								<p>{{ $t("Language.Detail")}}</p>
+							</div>
+						</div>
+						<div class="goodsInfoPlay clearfloat">
+							<p>￥<span>1000.0</span>/个</p>
+							<button onclick="GotoTaoBao();">{{ $t("Language.MyBuy")}}</button>
+						</div>
+					</div>
+
+				</div>
+			</div>
+
+			<!-- 窗 -->
+
+			<!-- 门 -->
+			<div class="attributeInterface" id="door">
+				<div class="attrTitle">
+					<span>{{ $t("Language.Door")}}</span>
+					<i class="el-icon-close attrClose"></i>
+				</div>
+				<div class="attrBody">
+					<el-scrollbar style="height:100%">
+						<div class="itemList-title">
+							<p>{{ $t("Language.Attribute")}}</p>
+							<span class="el-icon-arrow-up"></span>
+						</div>
+						<div class="itemList-imgList clearfloat">
+							<div class="listSlider">
+								<!-- 长度 -->
+								<span class="demonstration">{{ $t("Language.Length")}}</span>
+								<div class="sliderBlock">
+									<el-slider v-model="attributeInterface.door.length.int"
+										:min="attributeInterface.door.length.min"
+										:max="attributeInterface.door.length.max"
+										:disabled="attributeInterface.door.length.disabled" @input="doorLenght">
+									</el-slider>
+								</div>
+								<div class="sliderInputNum">
+									<el-input-number v-model="attributeInterface.door.length.int"
+										controls-position="right" size="mini" :min="attributeInterface.door.length.min"
+										:max="attributeInterface.door.length.max"
+										:disabled="attributeInterface.door.length.disabled" @input="doorLenght">
+									</el-input-number>
+								</div>
+								<span class="demonstration">mm</span>
+							</div>
+
+							<div class="listSlider">
+								<!-- 宽度 -->
+								<span class="demonstration">{{ $t("Language.Height")}}</span>
+								<div class="sliderBlock">
+									<el-slider v-model="attributeInterface.door.height.int"
+										:min="attributeInterface.door.height.min"
+										:max="attributeInterface.door.height.max"
+										:disabled="attributeInterface.door.height.disabled" @input="doorHeight">
+									</el-slider>
+								</div>
+								<div class="sliderInputNum">
+									<el-input-number v-model="attributeInterface.door.height.int"
+										controls-position="right" size="mini" :min="attributeInterface.door.height.min"
+										:max="attributeInterface.door.height.max"
+										:disabled="attributeInterface.door.height.disabled" @input="doorHeight">
+									</el-input-number>
+								</div>
+								<span class="demonstration">mm</span>
+							</div>
+							<div class="uniformScaling justify-space">
+								<el-button plain onClick="m_ParamDoorDlg.OnRotate()">{{ $t("Language.Rotate")}}
+								</el-button>
+								<el-button plain onClick="m_ParamDoorDlg.Restore()">{{ $t("Language.Reset")}}
+								</el-button>
+							</div>
+
+							<div class="md-itemList">
+								<div class="itemList-title">
+									<p>{{ $t("Language.GoodsInDetail")}}</p>
+									<span class="el-icon-arrow-up"></span>
+								</div>
+								<div class="itemList-imgList clearfloat">
+									<div class="goodsDetail">
+										<div class="goodsImg"><img src="" alt=""></div>
+										<div class="goosNmaes">
+											<p>{{ $t("Language.ProductName")}}</p>
+											<p>{{ $t("Language.Size")}}<span>1.7x0.8x0.9</span>(m)</p>
+											<i class="el-icon-info goodsInfo" toptip='door'></i>
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<div class="md-itemList" style="position: relative;">
+								<el-button type="text" style="position:absolute;top: -1px;left:87px;z-index: 10;">
+									{{ $t("Language.PrevPage")}}</el-button>
+								<el-button type="text" style="position:absolute;top: -1px;left:107px;z-index: 10;">
+									{{ $t("Language.NextPage")}}</el-button>
+								<div class="itemList-title">
+									<p>{{ $t("Language.Match")}}</p>
+									<span class="el-icon-arrow-up"></span>
+								</div>
+								<ul class="itemList-imgList clearfloat itemList-goodList">
+								</ul>
+							</div>
+						</div>
+					</el-scrollbar>
+					<div class="detailedInformation">
+						<div class="goosInforImg"></div>
+						<div class="goosInforTitle">
+							<img src="img/Apartment_02.png" alt=""><span> {{ $t("Language.ProductName")}}</span>
+						</div>
+						<div class="goosInforText">
+							<div class="itemList-title">
+								<p>{{ $t("Language.Detail")}}</p>
+							</div>
+							<!-- <p data-i18n-text="Merchant"><span>皇家一号门</span></p>
+							<p data-i18n-text="Brand"><span>冰雪奇缘</span></p>
+							<p data-i18n-text="Number"><span>55555555122</span></p> -->
+						</div>
+						<div class="goodsInfoPlay clearfloat">
+							<p>$<span>1000.0</span>/个</p>
+							<button onclick="GotoTaoBao();">{{ $t("Language.MyBuy")}}</button>
+						</div>
+					</div>
+
+				</div>
+			</div>
+	
+			<!-- 门 -->
+
+			<!-- 房间类型 -->
+			<div class="attributeInterface" id="room-type">
+
+				<div class="attrTitle">
+					<span>{{ $t("Language.Room")}}</span>
+					<i class="el-icon-close attrClose"></i>
+				</div>
+				<div class="attrBody">
+					<div class="itemList-title">
+						<p>{{ $t("Language.Attribute")}}</p>
+						<span class="el-icon-arrow-up"></span>
+					</div>
+					<div class="itemList-imgList clearfloat">
+
+						<div class="roomType-cont">
+							<span class="">{{ $t("Language.RoomType")}}:</span>
+							<el-select v-model="attributeInterface.room_type.value"
+								placeholder='{{ $t("Language.PleaseChoose")}}'>
+								<el-option v-for="item in attributeInterface.room_type.options" :key="item.value"
+									:label="item.label" :value="item.value">
+								</el-option>
+							</el-select>
+						</div>
+
+						<div class="listSlider">
+							<!-- 旋转 -->
+							<span class="demonstration">{{ $t("Language.Rotate")}}</span>
+							<div class="sliderBlock">
+								<el-slider v-model="attributeInterface.room_type.rotate.int"
+									:min="attributeInterface.room_type.rotate.min"
+									:max="attributeInterface.room_type.rotate.max"
+									:disabled="attributeInterface.room_type.rotate.disabled"></el-slider>
+							</div>
+							<div class="sliderInputNum">
+								<el-input-number v-model="attributeInterface.room_type.rotate.int"
+									controls-position="right" size="mini" :min="attributeInterface.room_type.rotate.min"
+									:max="attributeInterface.room_type.rotate.max"
+									:disabled="attributeInterface.room_type.rotate.disabled"></el-input-number>
+							</div>
+							<span class="demonstration">deg</span>
+						</div>
+
+						<div class="listSlider">
+							<!-- U偏移 -->
+							<span class="demonstration">{{ $t("Language.UOffset")}}</span>
+							<div class="sliderBlock">
+								<el-slider v-model="attributeInterface.room_type.U_deviation.int"
+									:min="attributeInterface.room_type.U_deviation.min"
+									:max="attributeInterface.room_type.U_deviation.max"
+									:disabled="attributeInterface.room_type.U_deviation.disabled"></el-slider>
+							</div>
+							<div class="sliderInputNum">
+								<el-input-number v-model="attributeInterface.room_type.U_deviation.int"
+									controls-position="right" size="mini"
+									:min="attributeInterface.room_type.U_deviation.min"
+									:max="attributeInterface.room_type.U_deviation.max"
+									:disabled="attributeInterface.room_type.U_deviation.disabled"></el-input-number>
+							</div>
+							<span class="demonstration">deg</span>
+						</div>
+
+						<div class="listSlider">
+							<!-- V偏移 -->
+							<span class="demonstration">{{ $t("Language.VOffset")}}</span>
+							<div class="sliderBlock">
+								<el-slider v-model="attributeInterface.room_type.V_deviation.int"
+									:min="attributeInterface.room_type.V_deviation.min"
+									:max="attributeInterface.room_type.V_deviation.max"
+									:disabled="attributeInterface.room_type.V_deviation.disabled"></el-slider>
+							</div>
+							<div class="sliderInputNum">
+								<el-input-number v-model="attributeInterface.room_type.V_deviation.int"
+									controls-position="right" size="mini"
+									:min="attributeInterface.room_type.V_deviation.min"
+									:max="attributeInterface.room_type.V_deviation.max"
+									:disabled="attributeInterface.room_type.V_deviation.disabled"></el-input-number>
+							</div>
+							<span class="demonstration">deg</span>
+						</div>
+
+						<div class="uniformScaling justify-space">
+							<el-checkbox v-model="attributeInterface.room_type.checked_1">
+								{{ $t("Language.ShowRoomNameArea")}}</el-checkbox>
+						</div>
+						<div class="uniformScaling justify-space">
+							<el-checkbox v-model="attributeInterface.room_type.checked_2">
+								{{ $t("Language.SkirtingLine")}}</el-checkbox>
+						</div>
+					</div>
+
+					<div class="md-itemList">
+						<div class="itemList-title">
+							<p>{{ $t("Language.GoodsInDetail")}}</p>
+							<span class="el-icon-arrow-up"></span>
+						</div>
+						<div class="itemList-imgList clearfloat">
+							<div class="goodsDetail">
+								<div class="goodsImg"><img src="" alt=""></div>
+								<div class="goosNmaes">
+									<p>{{ $t("Language.ProductName")}}</p>
+									<p>{{ $t("Language.Size")}}<span>1.7x0.8x0.9</span>(m)</p>
+									<i class="el-icon-info goodsInfo"></i>
+								</div>
+							</div>
+						</div>
+					</div>
+
+				</div>
+
+				<div class="detailedInformation">
+					<div class="goosInforImg"></div>
+					<div class="goosInforTitle">
+						<img src="img/Apartment_02.png" alt=""><span> {{ $t("Language.ProductName")}}</span>
+					</div>
+					<div class="goosInforText">
+						<div class="itemList-title">
+							<p>{{ $t("Language.Detail")}}</p>
+						</div>
+						<p data-i18n-text="Merchant"><span>皇家一号房间类型</span></p>
+						<p data-i18n-text="Brand"><span>冰雪奇缘</span></p>
+						<p data-i18n-text="Number"><span>55555555122</span></p>
+					</div>
+					<div class="goodsInfoPlay clearfloat">
+						<p>$<span>1000.0</span>/个</p>
+						<button onclick="GotoTaoBao();">{{ $t("Language.MyBuy")}}</button>
+					</div>
+				</div>
+
+			</div>
+			<!-- 房间类型 -->
+
+			<!-- 房间文字 -->
+			<div class="attributeInterface" id="roomText">
+
+				<div class="attrTitle">
+					<span>{{ $t("Language.Room")}}文字</span>
+					<i class="el-icon-close attrClose"></i>
+				</div>
+				<div class="attrBody">
+					<div class="customize-text">
+						<input type="text" name="" placeholder="自定义文字"> <button>确认</button>
+					</div>
+					<div class="roomText-block">
+						<el-scrollbar style="height: 100%">
+							<div class="md-itemList">
+								<div class="itemList-title">
+									<p>常见文字</p>
+									<span class="el-icon-arrow-up"></span>
+								</div>
+								<div class="itemList-imgList">
+									<ul class="clearfloat roomText-scrollbar">
+										<li><p>客厅</p></li>
+										<li><p>餐厅</p></li>
+										<li><p>客餐厅</p></li>
+										<li><p>门厅</p></li>
+										<li><p>卧室</p></li>
+										<li><p>主卧</p></li>
+										<li><p>次卧</p></li>
+										<li><p>客卧</p></li>
+										<li><p>儿童房</p></li>
+										<li><p>老人房</p></li>
+										<li><p>保姆房</p></li>
+										<li><p>书房</p></li>
+										<li><p>衣帽间</p></li>
+										<li><p>卫生间</p></li>
+										<li><p>主卫</p></li>
+										<li><p>次卫</p></li>
+										<li><p>公卫</p></li>
+										<li><p>厨房</p></li>
+										<li><p>中厨</p></li>
+										<li><p>西厨</p></li>
+										<li><p>庭院</p></li>
+										<li><p>过道</p></li>
+										<li><p>走廊</p></li>
+										<li><p>楼梯间</p></li>
+										<li><p>储物室</p></li>
+										<li><p>影音室</p></li>
+										<li><p>棋牌室</p></li>
+										<li><p>外景</p></li>
+										<li><p>茶室</p></li>
+										<li><p>健身房</p></li>
+										<li><p>酒窑</p></li>
+										<li><p>多功能室</p></li>
+										<li><p>休闲区</p></li>
+										<li><p>设备间</p></li>
+										<li><p>车库</p></li>
+									</ul>
+								</div>
+							</div>
+							<div class="md-itemList">
+								<div class="itemList-title">
+									<p>实验室</p>
+									<span class="el-icon-arrow-up"></span>
+								</div>
+								<div class="itemList-imgList">
+									<ul class="clearfloat roomText-scrollbar">
+										<li><p>前处理器</p></li>
+										<li><p>有机处理器</p></li>
+										<li><p>ICP-MS仪器室</p></li>
+										<li><p>气瓶间</p></li>
+										<li><p>数据处理室</p></li>
+										<li><p>毒素处理室</p></li>
+										<li><p>办公室</p></li>
+										<li><p>主办公室</p></li>
+										<li>
+											<p>一层平面图</p>
+										</li>
+										<li>
+											<p>走廊</p>
+										</li>
+										<li>
+											<p>卫生间</p>
+										</li>
+										<li>
+											<p>电梯间</p>
+										</li>
+										<li>
+											<p>会议室</p>
+										</li>
+									</ul>
+								</div>
+							</div>
+						</el-scrollbar>
+					</div>
+				</div>
+
+			</div>
+			<!-- 房间文字 -->
+
+			<!-- 动态编辑界面 -->
+			<div class="attributeInterface" id="mFloorParam">
+				<div class="attrTitle">
+					<span>平台参数设置</span>
+					<i class="el-icon-close attrClose"></i>
+				</div>
+				<div style="position:absolute;top:50px">
+					<div class="itemList-imgList clearfloat">
+						<div class="listSlider">
+							<span class="demonstration1">平台离地高</span>
+							<div class="sliderBlock" style="width:120px;">
+								<el-slider v-model="attributeInterface.ground.thickness.int"
+									:min="attributeInterface.ground.thickness.min" :max="attributeInterface.ground.thickness.max"
+									@input="GroundThickness"></el-slider>
+							</div>
+							<div class="sliderInputNum">
+								<el-input-number v-model="attributeInterface.ground.thickness.int" controls-position="right"
+									size="mini" :min="attributeInterface.ground.thickness.min"
+									:max="attributeInterface.ground.thickness.max"
+									@input="GroundThickness"></el-input-number>
+							</div>
+							<span class="demonstration">mm</span>
+						</div>
+						
+						<div class="listSlider">
+							<span class="demonstration1">平台厚度</span>
+							<div class="sliderBlock" style="width:120px;">
+								<el-slider v-model="attributeInterface.ground.height.int"
+									:min="attributeInterface.ground.height.min" :max="attributeInterface.ground.height.max"
+									@input="GroundHeight"></el-slider>
+							</div>
+							<div class="sliderInputNum">
+								<el-input-number v-model="attributeInterface.ground.height.int" controls-position="right"
+									size="mini" :min="attributeInterface.ground.height.min"
+									:max="attributeInterface.ground.height.max"
+									@input="GroundHeight"></el-input-number>
+							</div>
+							<span class="demonstration">mm</span>
+						</div>	
+						<div style="margin-top: 15px;">
+						<span class="demonstration1">楼层属性</span>
+						<el-select v-model="floorValue" placeholder="请选择" style="width:100px;height:30px" @change="m_ParamGroundDlg.OnChangeFloor()">
+						    <el-option
+						      v-for="item in floor"
+						      :key="item.value"
+						      :label="item.label"
+						      :value="item.value">
+						    </el-option>
+						</el-select>
+						<el-button style="margin-left: 10px;" type="primary" plain onClick= "m_ParamGroundDlg.OnDelete()">删除平台</el-button>
+						<el-button style="margin-left: 10px;margin-top: 15px;" type="primary" plain onClick= "m_ParamGroundDlg.OnDelEdge()">清除收边</el-button>
+						</div>
+						
+						<div class="create-cont" style="margin-top: 15px;" style="display: block;" id="mGround">
+						</div>						
+					</div>
+				</div>
+				
+			</div>
+			<!-- 效果按钮区 -->
+
+			<div class="effectButton clearfloat" id="mFurnitureBar" style="display: none;position:absolute">
+				<div class="effectButton-item">
+					<i class="el-icon-delete" onclick="m_ParamObjDlg.Delete()"></i>
+				</div>
+				<div class="effectButton-item" onclick="m_ParamObjDlg.Copy()">
+					<i class="icon iconfont icon-fuzhi2"></i>
+				</div>
+				<div class="effectButton-item" onclick="m_ParamObjDlg.Hide()">
+					<i class="icon iconfont icon-yincang3"></i>
+				</div>
+			</div>
+
+			<div class="clearfloat" id="mEditBar" style="position:absolute;display: none;width:100px;height:22px;" >
+				<el-input id="mEditWall" placeholder="请输入尺寸" :disabled="true" size="small" style="width:100px;opacity:0.9;" ></el-input>
+			</div>
+			
+			<div class="effectButton clearfloat" id="mDoorBar">
+				<div class="effectButton-item">
+					<i class="el-icon-delete" onclick="m_ParamDoorDlg.Delete()"></i>
+				</div>
+				<!-- 	<div class="effectButton-item" onclick="m_ParamDoorDlg.Copy()">
+					<i class="el-icon-minus"></i>
+				</div> -->
+			</div>
+
+			<div class="effectButton clearfloat" id="mWindowBar">
+				<div class="effectButton-item">
+					<i class="el-icon-delete" onclick="m_ParamWinDlg.Delete()"></i>
+				</div>
+				<!-- 	<div class="effectButton-item" onclick="m_ParamDoorDlg.Copy()">
+					<i class="el-icon-minus"></i>
+				</div> -->
+			</div>
+
+			<div class="effectButton clearfloat" id="mOutlineBar">
+				<div class="effectButton-item wallShow-icon">
+					<i class="icon iconfont icon-show" wallShow="1"></i>
+				</div>				
+			</div>
+			
+			<div class="effectButton clearfloat" id="mTextBar">
+				<div class="effectButton-item">
+					<i class="el-icon-delete" onclick="m_ParamTextDlg.Delete()"></i>
+				</div>
+			</div>
+			<!-- 效果按钮区 -->
+		</div>
+
+		<!-- 设置场景的大小 -->
+		<div class="sliderSize-block">
+			<div class="sliderSize-display">
+				<span>{{ $t("Language.InsideSpace")}}:</span><span id="mArea">0.00</span><span>m²</span>
+				<i class="icon iconfont icon-fangda5" style="cursor: pointer" onclick="mParamSystemDlg.OnViewMax()"></i>
+				<i class="el-icon-zoom-out" onclick="m_Coordniate.ZoomIn(1)"></i>
+				<div class="slider-model">
+					<el-slider v-model="sliderSize.sliderSizeValue" @change="OnZoomIn" :min="sliderSize.min"
+						:max="sliderSize.max"></el-slider>
+				</div>
+				<i class="el-icon-zoom-in" onclick="m_Coordniate.ZoomIn(-1)"></i>
+			</div>
+		</div>
+		<!-- 户型选择页面 -->
+		<div class="listInfo-item-info-model" style="display: none;">
+			<ul class="listInfo-item-tabsGroup clearfloat">
+				<li class="active" tab='0' style="font-size: 16px;">{{ $t("Language.ResultShow")}}</li>
+				<li tab='1' tyle="font-size: 16px;">{{ $t("Language.MaterialList")}}</li>
+			</ul>
+			<div class="listInfo-item-info-tab-1">
+				<div class="listInfo-item-info-img">
+					<p>{{ $t("Language.ChineseStyleDrawingRoom")}}</p>
+				</div>
+				<div class="listInfo-item-info-btn">
+					<div class="istInfo-item-info-btn-img">
+						<img src="img/haiz.png" class="istInfo-item-info-btn-img-link">
+						<img src="img/haiz.png" alt="">
+						<img src="img/haiz.png" alt="">
+					</div>
+					<div class="listInfo-item-info--btn">
+						<el-button type="primary" onclick="OnAIRoomClick(this)">{{ $t("Language.AKeyApplication")}}</el-button>
+					</div>
+				</div>
+			</div>
+			<div class="listInfo-item-info-tab-2" style="display: none;">
+				<el-scrollbar style="height: 100%">
+					<div class="listInfo-item-info-scrollbar-block clearfloat">
+
+					</div>
+				</el-scrollbar>
+			</div>
+		</div>
+
+		<!-- 类型筛选器 -->
+		<div class="template-input-buttom-type template-input-buttom-type_1" style="display: none;">
+			<div class="body_classStyle">
+			</div>
+			<div class="foot-btn clearfloat">
+				<div class="btn-block">
+					<el-button plain>{{ $t("Language.Reset")}}</el-button>
+					<el-button style="margin-left: 10px;" plain onClick="closeBtnModel(this)">
+						{{ $t("Language.Retract")}}</el-button>
+				</div>
+			</div>
+		</div>
+
+		<div class="template-input-buttom-type" style="display:none;" id="sampleRoom-typeList">
+
+			<div class="type-cont" multiSelect='false' id="sampleRoom-class1">
+				<div class="type-cont-title">
+					<p>{{ $t("Language.SpaceStyle")}}:</p>
+				</div>
+				<ul class="type-item-list clearfloat"></ul>
+			</div>
+
+			<div class="type-cont" multiSelect='false' id="sampleRoom-class2">
+				<div class="type-cont-title">
+					<p>{{ $t("Language.DecorateStyle")}}:</p>
+				</div>
+				<ul class="type-item-list clearfloat"></ul>
+			</div>
+
+			<div class="type-cont" multiSelect='fasle' id="sampleRoom-class3">
+				<div class="type-cont-title">
+					<p>{{ $t("Language.SubClass")}}:</p>
+				</div>
+				<ul class="type-item-list clearfloat"></ul>
+			</div>
+
+			<div class="foot-btn clearfloat">
+				<div class="btn-block">
+					<el-button plain>{{ $t("Language.Reset")}}</el-button>
+					<el-button style="margin-left: 10px;" plain onClick="closeBtnModel(this)">
+						{{ $t("Language.Retract")}}</el-button>
+				</div>
+			</div>
+		</div>
+		<!-- 类型筛选器 -->
+
+		<!-- click弹出框 -->
+		<div class="modelBase_link_model clearfloat"></div>
+
+		<div class="modelBase_sucai_model clearfloat">
+			<el-scrollbar style="height:100%;">
+				<div class="modelBase_sucai_scrollbar clearfloat"></div>
+			</el-scrollbar>
+		</div>
+		<div class="modelBase_moxing_model clearfloat">
+			<el-scrollbar style="height:100%;">
+				<div class="modelBase_moxing_scrollbar clearfloat"></div>
+			</el-scrollbar>
+		</div>
+
+		<div id="mGifBak" style="display:none;">
+		<img src="img/alert1.png" style="position:absolute;top:45%;left:39%;z-index: 1002;opacity:1;"></img>
+		<p style="position: absolute;font-size:20px;top:51%;left:47%;color:#ffffff;z-index: 1002;opacity:1;">&nbsp;帐号被登录，当前已强制下线....</p>
+		</div>
+		
+		<div id="mGifBak1" style="display:none;"></div>
+		<div id="LoadingTime" style="display:none;">
+			<div class='base1'>
+				<div class='cube1'></div>
+				<div class='cube1'></div>
+				<div class='cube1'></div>
+				<div class='cube1'></div>
+			</div>
+			<p id="mLoadingText" style="position:absolute;top:190px;font-size:18px;color:#ffffff;">正在加载数据...(200/207)</p>
+			<el-button plain style="position: absolute;top:250px;left:50px;" onclick="ShowLoadingDlg(false)">取消加载</el-button>
+		</div>		
+			
+
+		<!-- 调用窗口 -->
+		<div id="mBak"></div>
+		<div class="createDesign" style="display: none">
+			<div
+				style="top:0px;left:0px;width:100%;height:100%;position:absolute;cursor:pointer;background-color: #ffffff;">
+			</div>
+			<div class="createDesign-title">
+				<span class="createDesign-title-block createDesign-title-link"></span>
+				<el-button type="text" icon="el-icon-close" class="createDesignClose"></el-button>
+			</div>
+			<iframe src="" id="createDesign-mian"></iframe>
+		</div>
+
+		<div class="createDesign_create" style="display:none;height: 390px;">
+			<div
+				style="top:0px;left:0px;width:100%;height:100%;position:absolute;cursor:pointer;background-color: #ffffff;">
+			</div>		
+			<div class="createDesign-title">
+				<span class="createDesign-title-block createDesign-title-link">{{ $t("Language.MyDesign")}}</span>
+				<span id="gGongXiangFangAn">{{ $t("Language.SharingScheme")}}</span>
+				<el-button type="text" icon="el-icon-close" onclick="OnCloseOpenDlg()"></el-button>
+			</div>
+			<div class="myDesign">
+				<ul class="myDesign-list-info clearfloat">					
+				</ul>
+				<div class="myDesign_pag clearfloat">
+					<span>首页</span>
+					<span>上页</span>
+					<span>下页</span>
+					<span>尾页</span>
+					<input type="number" name="" min='1'>
+					<span>跳转</span>
+				</div>
+			</div>
+		</div>
+
+		<!-- 方案查找 -->
+		<div class="huxingAndScheme">
+			<div class="closeBtn_block">
+				<el-button type="text" icon="el-icon-close" class="createDesignClose"></el-button>
+			</div>
+			<div class="huxingAndScheme-search">
+				<div class="huxingAndScheme-search-input">
+					<el-input placeholder="请输入内容" v-model="huxingAndScheme.searchValue" class="input-with-select">
+						<el-select v-model="huxingAndScheme.selectValue" slot="prepend" 
+							placeholder='{{ $t("Language.Choose")}}'>
+							<el-option label="温州" value="1"></el-option>
+							<el-option label="杭州" value="2"></el-option>
+							<el-option label="上海" value="3"></el-option>
+						</el-select>
+						<el-button slot="append" icon="el-icon-search">{{ $t("Language.Search")}}</el-button>
+					</el-input>
+				</div>
+				<p>{{ $t("Language.ShowDesignDrawing")}}</p>
+			</div>
+			<div class="huxingAndScheme-types">
+				<div class="huxingAndScheme-types-list">
+					<h4>{{ $t("Language.Type")}}:</h4>
+					<ul class="clearfloat">
+						<li class="huxingAndScheme-types-link">{{ $t("Language.HouseTypeImage")}}</li>
+						<li>{{ $t("Language.DesigningScheme")}}</li>
+					</ul>
+				</div>
+				<div class="huxingAndScheme-types-list">
+					<h4>{{ $t("Language.Area")}}:</h4>
+					<ul class="clearfloat">
+						<li class="huxingAndScheme-types-link">{{ $t("Language.Unlimited")}}</li>
+						<li>{{ $t("Language.Less")}}60m³</li>
+						<li>60m³-80m³</li>
+						<li>80m³-100m³</li>
+						<li>120m³-150m³</li>
+						<li>{{ $t("Language.Greater")}}150m³</li>
+					</ul>
+				</div>
+				<div class="huxingAndScheme-types-list">
+					<h4>{{ $t("Language.HouseType")}}:</h4>
+					<ul class="clearfloat">
+						<li class="huxingAndScheme-types-link">{{ $t("Language.Unlimited")}}</li>
+						<li>{{ $t("Language.OneHouse")}}</li>
+						<li>{{ $t("Language.TwoHouse")}}</li>
+						<li>{{ $t("Language.ThreeHouse")}}</li>
+						<li>{{ $t("Language.FourHouse")}}</li>
+						<li>{{ $t("Language.FiveHouse")}}</li>
+						<li>{{ $t("Language.MoreHouse")}}</li>
+						<li>{{ $t("Language.DuplexApartment")}}</li>
+						<li>{{ $t("Language.Other")}}</li>
+					</ul>
+				</div>
+				<div class="huxingAndScheme-types-list">
+					<h4>{{ $t("Language.Style")}}:</h4>
+					<ul class="clearfloat">
+						<li class="huxingAndScheme-types-link">{{ $t("Language.Unlimited")}}</li>
+						<li>{{ $t("Language.PostModern")}}</li>
+						<li>{{ $t("Language.IndustryStyle")}}</li>
+						<li>{{ $t("Language.OriginalStyle")}}</li>
+						<li>{{ $t("Language.FrenchStyle")}}</li>
+						<li>{{ $t("Language.ChineseStyleDrawingRoom")}}</li>
+						<li>{{ $t("Language.American")}}</li>
+						<li>{{ $t("Language.Modern")}}</li>
+						<li>{{ $t("Language.EuropeanStyle")}}</li>
+						<li>{{ $t("Language.Pastoralism")}}</li>
+						<li>{{ $t("Language.NewClassics")}}</li>
+						<li>{{ $t("Language.ChineseStyle")}}</li>
+						<li>{{ $t("Language.Japanese")}}</li>
+						<li>{{ $t("Language.Mediterranean")}}</li>
+						<li>{{ $t("Language.EuropeStyle")}}</li>
+						<li>{{ $t("Language.SoutheastAsia")}}</li>
+						<li>{{ $t("Language.NorthernEurope")}}</li>
+						<li>{{ $t("Language.MingAndQing")}}</li>
+						<li>{{ $t("Language.MixAndMatch")}}</li>
+					</ul>
+				</div>
+			</div>
+			<div class="huxingAndScheme-body">
+				<el-scrollbar style="height:100%;">
+					<ul class="huxingAndScheme-body-ul clearfloat">
+						<!--<li>
+							<div class="huxingAndScheme-body-img" onClick="myTooptip()">
+								<img src="img/create_01.png" alt="">
+							</div>
+							<p>120m³ 三居 幢:1,2,3</p>
+							<p>浙江温州 同人欣园</p>
+						</li>
+						<li>
+							<div class="huxingAndScheme-body-img">
+								<img src="img/create_01.png" alt="">
+							</div>
+							<p>120m³ 三居 幢:1,2,3</p>
+							<p>浙江温州 同人欣园</p>
+						</li>
+						<li>
+							<div class="huxingAndScheme-body-img">
+								<img src="img/create_01.png" alt="">
+							</div>
+							<p>120m³ 三居 幢:1,2,3</p>
+							<p>浙江温州 同人欣园</p>
+						</li>
+						<li>
+							<div class="huxingAndScheme-body-img">
+								<img src="img/create_01.png" alt="">
+							</div>
+							<p>120m³ 三居 幢:1,2,3</p>
+							<p>浙江温州 同人欣园</p>
+						</li>-->
+					</ul>
+				</el-scrollbar>
+			</div>
+			<div class="huxingAndScheme-foot">
+				<p>找不到想要的户型？试试<el-button type="text">自由绘制</el-button>
+				</p>
+				<el-pagination :current-page.sync="huxingAndScheme.currentPage" :page-size="100"
+					layout="prev, pager, next, jumper" :total="1000">
+				</el-pagination>
+			</div>
+
+			<div class="huxingAndScheme-tooptip">
+				<div class="huxingAndScheme-top-img">
+					<img src="img/huxingAndScheme_img.png" alt="">
+				</div>
+				<div class="huxingAndScheme-text-btn">
+					<p>120m³ 三居 幢:1,2,3</p>
+					<p>浙江温州 同人欣园</p>
+					<el-button type="success">去装修</el-button>
+				</div>
+			</div>
+		</div>
+
+		<!-- 方案编辑 -->
+		<div class="programEditor">
+			<div class="createDesign-title">
+				<span class="design-dialog-title" v-show="programEditor.typeName==0">{{ $t("Language.SchemeEdit")}}</span>
+				<span class="housetype-dialog-title" v-show="programEditor.typeName==1">保存</span>
+				<el-button type="text" icon="el-icon-close" class="createDesignClose"></el-button>
+			</div>
+
+			<div class="programEditor-body clearfloat">
+				<div class="programEditor-left">
+                   <img src="" id="program-editor-image"/>
+				</div>
+				<div class="programEditor-right">
+					<div class="programEditor-input-item">
+						<span class="programEditor-text-left">{{ $t("Language.SchemeName")}}</span>
+						<el-input placeholder="" v-model="programEditor.name" clearable></el-input>
+					</div>
+					<div class="programEditor-input-item">
+						<span class="programEditor-text-left">{{ $t("Language.DesignOrganization")}}</span>
+						<el-input placeholder="" v-model="programEditor.designUnit" clearable></el-input>
+					</div>
+					<div class="programEditor-input-item">
+						<span class="programEditor-text-left">{{ $t("Language.Designer")}}</span>
+						<el-input placeholder="" v-model="programEditor.designer" clearable></el-input>
+					</div>
+					<div class="programEditor-input-item">
+						<span class="programEditor-text-left">{{ $t("Language.Style")}}</span>
+						<el-select v-model="programEditor.style" clearable placeholder="">
+							<el-option v-for="item in programEditor.option" :key="item.label" :label="item.label"
+								:value="item.label">
+							</el-option>
+						</el-select>
+					</div>
+					<div class="programEditor-input-item">
+						<span class="programEditor-text-left">{{ $t("Language.SchemeAddr")}}</span>
+						<el-input placeholder="" v-model="programEditor.schemeAddr" clearable></el-input>
+					</div>
+					<div class="programEditor-input-item">
+						<span class="programEditor-text-left">{{ $t("Language.SchemeDescription")}}</span>
+						<el-input placeholder="" v-model="programEditor.schemeDescription" clearable></el-input>
+					</div>
+					<el-button type="success" @click.native="mPluginsClass.OnSave()">{{ $t("Language.Save")}}</el-button>
+				</div>
+			</div>
+		</div>
+
+
+
+		<!-- 全局设置 -->
+		<div class="GlobalSettings">
+			<div class="createDesign-title">
+				<span class="">全局设置</span>
+				<el-button type="text" icon="el-icon-close" class="createDesignClose"></el-button>
+			</div>
+			<div class="GlobalSettings-body clearfloat">
+				<div class="GlobalSettings-body-left">
+					<div class="GlobalSettings-body-left-item-2">
+						<el-checkbox v-model="GlobalSettings.checked_1">独立保存临时方案</el-checkbox>
+					</div>
+					<div class="GlobalSettings-body-left-item-2">
+						<el-checkbox v-model="GlobalSettings.checked_2">模型自动对齐</el-checkbox>
+					</div>
+					<div class="GlobalSettings-body-left-item-3">
+						<el-form ref="form" :model="GlobalSettings.form" label-width="80px">
+							<el-form-item label="用户名">
+								<el-input v-model="GlobalSettings.form.name" disabled></el-input>
+							</el-form-item>
+							<el-form-item label="旧密码">
+								<el-input v-model="GlobalSettings.form.oldPassword"></el-input>
+							</el-form-item>
+							<el-form-item label="新密码">
+								<el-input v-model="GlobalSettings.form.newPassword"></el-input>
+							</el-form-item>
+							<el-form-item label="确认密码">
+								<el-input v-model="GlobalSettings.form.confirmPassword"></el-input>
+							</el-form-item>
+							<el-form-item>
+								<el-button type="primary"  style="position:absolute;left:20%;bottom:-45px">确认</el-button>
+							</el-form-item>
+						</el-form>
+					</div>
+				</div>
+				<div class="GlobalSettings-body-right">
+					<div class="GlobalSettings-body-left-item-2">
+						<el-checkbox v-model="GlobalSettings.checked_3">3D下墙地面材料连续铺贴</el-checkbox>
+					</div>
+					<div class="GlobalSettings-body-left-item-2">
+						<el-checkbox v-model="GlobalSettings.checked_4">墙体尺寸显示米</el-checkbox>
+					</div>
+					<div class="GlobalSettings-body-left-item-2">
+						<el-checkbox v-model="GlobalSettings.checked_5" >分类鼠标点击显示</el-checkbox>
+					</div>
+					<div class="GlobalSettings-body-left-item-2">
+						<span>鼠标滚动缩放系数:</span>
+						<el-input-number v-model="GlobalSettings.num_1.int" :min="GlobalSettings.num_1.min"
+							:max="GlobalSettings.num_1.max" :disabled="GlobalSettings.num_1.disabled"
+							controls-position="right"></el-input-number>
+					</div>
+					<div class="GlobalSettings-body-left-item-2">
+						<span>墙体高度:</span>
+						<el-input-number v-model="GlobalSettings.num_2.int" :min="GlobalSettings.num_2.min"
+							:max="GlobalSettings.num_2.max" :disabled="GlobalSettings.num_2.disabled"
+							controls-position="right" @input="FloorHeight"></el-input-number><span> (1--10)米</span>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- 全局设置 -->
+
+		<!-- 快捷键设置 -->
+		<div class="shortcutkeys">
+			<div class="createDesign-title">
+				<span class="">快捷键</span>
+				<el-button type="text" icon="el-icon-close" class="createDesignClose"></el-button>
+			</div>
+			<div class="shortcutkeys_body clearfloat">
+				<div class="shortcutkeys_list_item">
+					<span>背景网格</span> <input type="button" name="" value="Ctrl+B">
+				</div>
+				<div class="shortcutkeys_list_item">
+					<span>尺寸</span> <input type="button" name="" value="Alt+S">
+				</div>
+				<div class="shortcutkeys_list_item">
+					<span>家具</span> <input type="button" name="" value="Alt+F">
+				</div>
+				<div class="shortcutkeys_list_item">
+					<span>房间名称</span> <input type="button" name="" value="Alt+R">
+				</div>
+				<div class="shortcutkeys_list_item">
+					<span>透明外墙</span> <input type="button" name="" value="Alt+W">
+				</div>
+				<div class="shortcutkeys_list_item">
+					<span>保存</span> <input type="button" name="" value="Alt+S">
+				</div>
+			</div>
+		</div>
+		<!-- 快捷键设置 -->
+
+		<!-- 更新日志 -->
+		<div class="updateLogs">
+			<div class="createDesign-title">
+				<span class="">更新日志</span>
+				<el-button type="text" icon="el-icon-close" class="createDesignClose"></el-button>
+			</div>
+			<div class="updateLogs_body clearfloat">
+				<textarea id="remarks" class="updateLogs_text"></textarea>
+			</div>
+		</div>
+		<!-- 更新日志 -->
+		<!-- 渲染 -->
+		<iframe src="" frameborder="0" id="RenderingModel"></iframe>
+
+		<!-- 登录窗口 -->
+		<div id="mLoginBak" style="top:0px;left:0px;width:100%;height:100%;position:absolute;background-color: #343A4D; z-index: 2000">
+		</div>
+
+		<!--用户登录界面-->
+		<div id="mLoginBK" style="position:absolute;top:0%;width:100%;height:100%; z-index: 2001;display: none">
+			<img id="mLoginBKImage"  style="top:0px;left:0px;width:100%;height:100%;position:relative;" />
+			<div id="mLoginBst" style="position: absolute;right:5%;top:28%;width:416px;height: 402px">
+				<img id="mLogin1" style="top:0px;left:0px;width:100%;height:100%;position:relative;" />
+				<input type="text" class="mInputUser" name="username" placeholder="手机号" />
+				<input type="password" class="mInputPassword" name="password" placeholder="123456"/>
+				<span id="login-bst_btn" onclick="main()" >{{ $t("Language.Logoin")}}</span>
+				<span class="cadlink" style='color: #888888;font-size: 14px;position: absolute;left: 175px;top: 80%;' onclick="GotoWeb();">新用户注册</span>
+				<span style='color: #888888;font-size: 14px;position:absolute;left:120px;top:88%;' >建议使用谷歌浏览器</span>
+				<span class="cadlink" style="color: #888888;font-size:14px;position:absolute;left:260px;top:88%;" onclick="DownloadChrome();">(下载版本)</span>
+			</div>
+			<span style='color: #888888;font-size: 14px;position: absolute;left: 420px;top: 430px;' id="mLink"></span>
+		</div>
+
+		<div class='pic-bg'></div>
+		<progress class='scroll' style="width:99.9%" max="100" value="0" id="pg"></progress>
+
+		<span id="mHelpRoam" style="bottom:10px;left:5%;position:absolute;color:#ff0000;display:none">操作提示:
+			wsad移动、空格键跳跃、鼠标控制方向, Esc退出 </span>
+		<img src="" class="hover_img">
+
+		<div class="grk_conter"></div>
+	</div>
+	<script type="text/javascript">
+		var m_PrivateLibrary = true;
+		var m_version = 'index_3';
+        var m_SystemVersion = ''; 
+	    var m_strWebService = 'http://www.ihouse3d.com.cn/';	//服务器全局变量
+		var m_strHttp = m_strWebService+'ihouse/data/';
+		//$('#mLink').html("服务器地址:   "+m_strWebService);
+	</script>	
+	<script src="js/include.js"></script>
+</body>
+</html>	

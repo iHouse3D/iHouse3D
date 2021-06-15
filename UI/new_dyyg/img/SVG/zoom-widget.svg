@@ -1,0 +1,11 @@
+<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30">
+  <title>material_hover copy</title>
+  <g>
+    <polygon points="27.456 27.03 2.456 27.03 2.456 2.03 27.456 27.03" fill="#fff"/>
+    <g>
+      <rect x="11.197" y="11.137" width="1" height="13.007" transform="translate(-9.048 13.437) rotate(-45)" fill="#19191e"/>
+      <rect x="8.721" y="15.005" width="1" height="9.89" transform="translate(-11.406 12.364) rotate(-45)" fill="#19191e"/>
+      <rect x="6.057" y="18.932" width="1" height="6.897" transform="translate(-13.906 11.193) rotate(-45.003)" fill="#19191e"/>
+    </g>
+  </g>
+</svg>

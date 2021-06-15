@@ -1,0 +1,14 @@
+.cls {
+    width: 0;
+    height: 0;
+    position: absolute;
+    /*top: 47px;*/
+    left: -15px;
+    background-color: #F5F5F5;
+    border: 1px solid #ddd;
+    padding-bottom: 10px;
+    overflow: hidden;
+    transition: height 0.5s;
+    display: none;
+    z-index: 0;
+}

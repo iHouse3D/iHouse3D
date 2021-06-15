@@ -1,0 +1,51 @@
+.left-titleMenu-item.titleMenu-active,.left-titleMenu-item:hover,.itemList-title>p:before{
+	background-color: #396EFE;
+}
+.icon-color,.pagechang span:hover,.titleMenu-list li.active, .titleMenu-list li:hover{
+	color: #396EFE;
+}
+.mainMenu-item:hover>p, .mainMenu-item:hover>i,.rendering-item:hover i, .rendering-item:hover p,.head-help:hover i,
+.head-help:hover p, .head-fullScreen:hover i, .head-fullScreen:hover p,.btn-complete:hover i, .btn-complete:hover span,
+.nav-tab-acitve{
+	color: #3e72ff;
+}
+.submenu-item:hover, .grandsonMenu-item:hover{
+	background-color: #EBF1FF;
+}
+.rendering,.btn-complete:hover,.nav-tab-acitve{
+    border: 1px solid #C4D4FF;
+    background-color: #EBF1FF;
+}
+.istInfo-item-info-btn-img>img:hover, .istInfo-item-info-btn-img>.istInfo-item-info-btn-img-link,.customize-text input:focus{
+	border:solid 3px #396EFE;
+}
+.modelBase_type_listItem_block .modelBase_type_links, .modelBase_type_listItem_block .modelBase_type_links:hover,.mpBottom span:hover{
+    background-color: #396EFE;
+}
+.customize-text button{
+	border: 1px solid #396EFE;
+    background-color: #396EFE;
+}
+.customize-text input:focus{
+	border: 1px solid #396EFE;
+}
+
+.main-left{
+    background-color: #ffffff;
+    border-right: 1px solid #fff;
+}
+.cont-header,.apartmentNavigation, .designSketch,.nav-tab,.rendering-title,.sliderSize-block{
+	background-color: #FFF;
+}
+.trapezoid{
+	border-color:transparent transparent #fff;
+}
+.modelBase-left_block{
+	background-color: #F5F5F5;
+}
+.roomText-scrollbar>li:hover{
+	border: 1px solid #396EFE;
+}
+.roomText-scrollbar>li:hover>p{
+	color: #396EFE;
+}

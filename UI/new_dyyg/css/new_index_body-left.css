@@ -1,0 +1,351 @@
+/*滚动条*/
+.el-scrollbar__wrap {
+	overflow-x: hidden !important;
+}
+.el-scrollbar{
+	height: 100%;
+}
+/*滚动条*/
+
+/*改*/
+.el-checkbox__label,.el-radio, .el-radio--medium.is-bordered .el-radio__label,.el-radio__label{
+	font-size: 12px;
+}
+.main-body{
+	top: -1px;
+}
+.main-left{
+	width: 365px;
+}
+.shrinkBar{
+	left: 348px;
+}
+.meshPic{
+	width: 129px;
+    height: 109px;
+}
+.template-input-buttom, .modelBase-input-buttom {
+    display: flex;
+    padding: 8px 5px;
+}
+.attributeInterface{
+	right: 0;
+	height: 73%;
+	top:245px;
+}
+
+#mMap{
+	width: 210px;
+	margin: 0 auto;
+}
+#viewsSwitching-block{
+	height: 100%;
+}
+.viewsSwitching-line{
+	background-color: rgba(0,0,0,0);
+}
+.roam {
+    height: 42%;
+}
+.modelBase-left_block{
+	width: 60px;
+}
+/*改*/
+
+.body_conter{
+	position: absolute;
+	width: 100%;
+	top:51px;
+	bottom: 0px;
+	/*background-color: #F00;*/
+	z-index: 1;
+}
+/*左侧标题栏*/
+.body_left_title{
+	position: absolute;
+	top:0;
+	left: 0px;
+	width: 60px;
+	height: 100%;
+	border-right:1px solid #E3E3E3;
+	background-color: #EEF3ED;
+}
+.left-titleMenu{
+	margin-top: 100px;
+}
+.left-titleMenu-item{
+	width: 100%;
+	height: 60px;
+	box-sizing: border-box;
+	transition: all 0.3s;
+	overflow: hidden;
+	transition: all 0.5s;
+	border-radius: 0 7px 7px 0px;
+}
+.left-titleMenu-item-border{
+	padding-top:6px;
+}
+.left-titleMenu-item .titleMenu-img{
+	display: block;
+	width: 28px;
+	height: 25px;
+	margin: 0 auto; 
+}
+.left-titleMenu-item .titleMenu-name{
+	margin-top: 3px;
+	font-size: 12px;
+	text-align: center;
+	padding-bottom: 5px;
+	transition: all 0.3s;
+	margin-bottom: 5px;
+}
+.left-titleMenu-item:hover{
+	cursor: pointer;
+	background-color: #EFF2EC;
+}
+.left-titleMenu-item:hover .titleMenu-name,.left-titleMenu-item.titleMenu-active .titleMenu-name{
+	color: #515151;
+}
+
+.titleMenu-list{
+	width: 100%;
+	height: auto;
+	background-color: #FFF;
+}
+.left-titleMenu-item.titleMenu-active .left-titleMenu-item-border{
+	/* background-color: #89A865; */
+	border: 2px solid transparent;
+	background-clip: padding-box,border-box;
+    background-origin: padding-box,border-box;
+    background-image: linear-gradient(180deg,#fff,#fff),linear-gradient(180deg,#E1EFA5,#6C8F43);
+    height: 50px;
+    border-radius: 0 7px 7px 0px;
+}
+.left-titleMenu-item.titleMenu-active .titleMenu-name{
+	color:#87A965;
+    font-weight: bold;
+}
+.titleMenu-list li{
+	width: 100%;
+	height: 35px;
+	text-align: center;
+	line-height: 35px;
+	font-size: 14px;
+	transition:  color 0.3s;
+}
+.titleMenu-list li.active,.titleMenu-list li:hover{
+	color:#89A865;
+}
+/*左侧标题栏*/
+
+/*左侧内容*/
+.body_left_conter{
+	position: absolute;
+	left: 61px;
+	top:0;
+	width: 300px;
+	height: 100%;
+	border-right:1px solid #E3E3E3;
+	border-bottom:1px solid #E3E3E3;
+	border-radius: 5px;
+}
+
+/*各个模块的滚动高度*/
+/*画户型*/
+.body_left-huxing{
+	width: 100%;
+	height: 100%;
+	position: relative;
+}
+.body_left-huxing .drawHouse-name{
+	margin:0 15px;
+	line-height: 45px;
+	font-size: 16px;
+	font-weight: bold;
+	border-bottom: 1px solid #E3E3E3;
+}
+.body_left-huxing .setScrollbarHeight{
+	width: 100%;
+	position: absolute;
+	top:45px;
+	left: 0px;
+	bottom: 0px;
+}
+
+/*画户型*/
+/*各个模块的滚动高度*/
+
+
+/*左侧内容
+
+/*画户型下拉功能*/
+.draw-conter{
+	width: 100%;
+	height: auto;
+	overflow: hidden;
+}
+.draw-title{
+	box-sizing: border-box;
+	width: 100%;
+	padding: 0 15px;
+	height: 30px;
+	position: relative;
+	display: flex;
+	justify-content:space-between;
+	align-items: center;
+	cursor: pointer;
+}
+.draw-title .draw-title-name{
+	color: #A7A7A7;
+	font-size: 14px;
+}
+.draw-title .draw-title-name:before{
+	content: '';
+	position: absolute;
+	width: 3px;
+	height: 15px;
+	background-color: #89A865;
+	top: 50%;
+	transform: translateY(-45%);
+	left:5px;
+}
+.draw-title i{
+	transition: all 0.3s;
+}
+/*.draw-body{
+	
+}*/
+.draw-item{
+	width: 75px;
+	height: 85px;
+	box-sizing: border-box;
+	padding: 10px 0;
+	margin-left: 10px;
+	transition:  all 0.3s;
+}
+.draw-item:nth-of-type(3n+1){
+	margin-left: 0px;
+}
+.draw-item img{
+	display: block;
+	width: 45px;
+	margin: 0 auto; 
+}
+.draw-item p{
+	margin-top: 3px;
+	text-align: center;
+}
+.draw-item:hover{
+	cursor:pointer;
+	background-color: #E4E4E4;
+	border-radius: 5px;
+}
+.draw-huxing{
+	padding:15px 25px;
+	display: flex;
+	flex-wrap: wrap;
+}
+/*画户型下拉功能
+
+/*属性精改*/
+.attributeInterface{
+	width: 241px;
+}
+.sliderBlock{
+	width: 90px;
+}
+.sliderBlock{
+	width: 70px;
+}
+.sliderBlock .el-slider__button {
+    width: 7px;
+    height: 7px;
+}
+.listSlider .el-slider__button-wrapper{
+	top: -16px;
+}
+.el-input-number--mini .el-input-number__decrease, .el-input-number--mini .el-input-number__increase{
+	width: 22px;
+}
+.goodsDetail {
+    height: 105px;
+    background-color: #FFF;
+}
+.goodsImg {
+    width: 95px;
+    height: 95px;
+    background-color: #FFF;
+}
+.goosNmaes {
+    height: 95px;
+    padding: 9px 0;
+    margin-left: 95px;
+}
+
+.itemList-imgList .uniformScaling{
+	padding: 10px 17px;
+}
+.justify-space {
+    display: flex;
+    justify-content:flex-start; 
+    align-items: center;
+    flex-wrap: wrap;
+}
+.body-item-list-img li:nth-of-type(3n+1){
+	 margin-left: 6px;
+}
+.body-item-list-img li:nth-of-type(2n+1) {
+    margin-left: 0px;
+}
+.body-item-list-img li {
+    width: 100px;
+    height: 75px;
+    margin-bottom: 7px;
+}
+.itemList-goodList li{
+	width: 100px;
+	height: 100px;
+}
+/*窗*/
+.el-radio-button__inner{
+	padding: 10px 15px;
+}
+/*窗*/
+
+/*系统库*/
+.systemLibrary_block{
+	width: 100%;
+	height: 100%;
+	box-sizing: border-box;
+	padding: 30px 19px 0;
+	background-color: #FFF;
+}
+.systemLibrary_item{
+	width: 76px;
+	height: 86px;
+	background-color: #F8F8F8;
+	float: left;
+	margin-left: 19px;
+	text-align: center;
+	font-size: 12px;
+	box-sizing: border-box;
+	padding-top: 15px;
+	margin-bottom: 30px;
+}
+.systemLibrary_item:nth-of-type(3n+1){
+	margin-left: 0;
+}
+.systemLibrary_item img{
+	width: 45px;
+	height: 45px;
+}
+.systemLibrary_item p{
+	margin-top: 5px;
+}
+.systemLibrary_item:hover{
+	cursor: pointer;
+	background-color: #F2F2F2;
+}
+/*系统库*/
+
+/*属性精改

@@ -1,0 +1,86 @@
+/*模式导航栏*/
+.nav-tab{
+	position: absolute;
+	bottom: 10px;
+	left: 380px;
+	width: auto;
+	height: 42px;
+	background-color: #FBFCF7;
+	border:1px solid #E6E6E5;
+	box-sizing: border-box;
+	padding: 5px;
+	cursor: pointer;
+}
+.nav-tab-block li{
+	float: left;
+}
+.nav-tab-item{
+    line-height: 14px;
+    padding: 7px 15px;
+    border-radius: 3px;
+    border: 1px solid #FBFCF7;
+}
+.nav-tab-acitve{
+	border-color:#DFDFDF;
+	background-color: #EEF3ED;
+}
+.nav-line{
+	margin: 6px 5px 0;
+	height: 18px;
+	border-right: 1px solid #E1E1E0;
+}
+/*模式导航栏*/
+
+/*滑块设置大小*/
+
+.sliderSize-block{
+	position: absolute;
+    right: 320px;
+    bottom: 10px;
+	min-width: 300px;
+	height: 34px;
+	background-color: #F4F6F1;
+	border-radius:50px;
+	padding-left: 15px;
+	box-sizing: border-box;
+}
+.sliderSize-display{
+	display: flex;
+	align-items:center;
+}
+.sliderSize-display>span{
+	font-size: 12px;
+}
+.sliderSize-display>span,.sliderSize-display>i{
+	color: #666;
+}
+.sliderSize-display>i:nth-of-type(1){
+	margin-right: 0px;
+}
+.sliderSize-display>i{
+	margin:0 10px;
+}
+.sliderSize-display>i:hover{
+	cursor: pointer;
+}
+.sliderSize-block .el-slider__runway{
+    height: 3px;
+    background-color: #ccc
+}
+.sliderSize-block .el-slider__button-wrapper{
+    top: -9px;
+    height: 20px;
+    width: 13px;
+}
+.sliderSize-block .el-slider__button{
+    width: 8px;
+    height: 8px;
+}
+.sliderSize-block .el-slider__bar{
+	height: 3px;
+}
+.slider-model{
+	width: 95px;
+	display: inline-block;
+}
+/*滑块设置大小*/

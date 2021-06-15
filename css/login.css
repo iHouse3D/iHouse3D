@@ -1,0 +1,91 @@
+	.login-namepwd {color: #fff;}
+
+	.login-namepwd input {
+		position: absolute;
+		top: 28.3%;
+	    left: 79.5%;
+	    width: 182px;
+	    height: 40px;
+		background-color: #fff;
+		border: 0;
+		z-index: 1;
+		font-size: 18px;
+		box-sizing: border-box;
+		padding-left: 10px;
+	}
+
+	.login-namepwd input:focus {outline: none;}
+	.login-namepwd input:nth-of-type(2) {margin-top: 68px;}
+
+	#login-btn {
+		position: absolute;
+		top: 300px;
+		left: 775px;
+		text-align: center;
+		line-height: 40px;
+		width: 345px;
+		height: 40px;
+		background: #43C6FF;
+		color: #fff;
+		border-radius: 6px;
+	}
+
+	#login-btn:hover {
+		cursor: pointer;
+		background-color: #2899EB;
+		color: #fff;
+	}
+
+	/***********百施通登录界面*******************/
+	.mLoginBst {color: #fff;}
+
+	.mInputUser {
+		position: absolute;
+		top: 23.1%;
+		left: 39.5%;
+		width: 215px;
+		height: 40px;
+		background-color: #fff;
+		border: 0;
+		z-index: 1;
+		font-size: 16px;
+		box-sizing: border-box;
+		padding-left: 10px;
+	}
+
+	.mInputPassword {
+		position: absolute;
+		top: 41.2%;
+		left: 39.5%;
+		width: 215px;
+		height: 40px;
+		background-color: #fff;
+		border: 0;
+		z-index: 1;
+		font-size: 16px;
+		box-sizing: border-box;
+		padding-left: 10px;
+	}
+
+	.mLoginBst input:focus {outline: none;}
+	.mLoginBst input:nth-of-type(2) {margin-top: 68px;}
+
+	#login-bst_btn {
+		position: absolute;
+		top: 250px;
+		left: 35px;
+		text-align: center;
+		line-height: 40px;
+		width: 345px;
+		height: 40px;
+		background: #43C6FF;
+		color: #fff;
+		border-radius: 6px;
+	}
+
+	#login-bst_btn:hover {
+		cursor: pointer;
+		background-color: #2899EB;
+		color: #000;
+	}
+	/*******************end 百施通登录界面*****************/

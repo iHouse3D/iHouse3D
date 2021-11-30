@@ -106,9 +106,11 @@ jQuery(document).ready(function() {
                     $('#mLoginBak').hide();	
                     $('#mLogin').hide();
                     $('#mLoginBK').hide();
-                    
 
-                    CheckUser1();
+
+					LoadSystemConfig(mCompanyID);
+
+					SetLogo();
               			
               		mWebAPI	= new WebAPI();
               		mWebAPI.m_strUser = strData[1];
@@ -136,59 +138,111 @@ jQuery(document).ready(function() {
     	});
     }
     
-    function CheckUser1()
+    function LoadSystemConfig(companyID)
     {
 		$.ajax({
-	        url: m_strWebService+'service1.asmx/GetFunctionList',
-	        type: "get",
-	        dataType: "text",
-	        contentType: "application/x-www-form-urlencoded",
-	        data: { CompanyID: mCompanyID},
-		    success: function (data)
-		    {
-		    	var tNode = JSON.parse(data);
-		    	var  xmlDoc = $.parseXML( tNode.function );
+			url: m_strWebService+'service1.asmx/GetFunctionList',
+			type: "get",
+			dataType: "text",
+			contentType: "application/x-www-form-urlencoded",
+			data: { CompanyID: companyID},
+			success: function (data)
+			{
+				var tNode = JSON.parse(data);
+				var  xmlDoc = $.parseXML( tNode.function );
 				if(xmlDoc == null)
 				{
 					alert("授权不存在，请联系技术支持!");
 					return;
 				}
-								
-				SetLogo();
-				$('#mHZ0').hide();
-								
+
 				var $xml = $( xmlDoc );
-				if($xml.find("结构").length > 0 && $xml.find("结构")[0].textContent == '1')
-					InitAPI_Parts();
 
-				if($xml.find("房间形状模板").length > 0 && $xml.find("房间形状模板")[0].textContent == '1')
-					InitAPI_RoomTemplate();
+				let arrItems = $xml.find('item');
+				for(let index = 0; index < arrItems.length;++index)
+				{
+					let item = arrItems[index];
+					let id = $(item).attr('id');
+					let value = $(item).text();
 
-				if($xml.find("门窗").length > 0 && $xml.find("门窗")[0].textContent == '1')
-					InitAPI_DoorAndWindow();
+					//房间形状模板
+					if(id == '93fbf3e11b55481589a5728994c8b500' && value == '1')
+						InitAPI_RoomTemplate();
 
-				if($xml.find("快速预算").length > 0 &&  $xml.find("快速预算")[0].textContent != '1')
-					$('#mBasicBudget').hide();
-					
+					//门窗
+					if(id == '58c24d33441845f5b8a376f7626cb6a9' && value == '1')
+						InitAPI_DoorAndWindow();
 
-				if($xml.find("画墙").length > 0 && $xml.find("画墙")[0].textContent == '1')
-					InitAPI_Base();
+					//结构
+					if(id == 'c4361d554df14f288daf8a0f6351f8cd' && value == '1')
+						InitAPI_Parts();
 
-				if($xml.find("云币支付").length > 0 && $xml.find("云币支付")[0].textContent == '1')
-					sessionStorage.setItem('UseYunbi','1');
-					
-				if($xml.find("渲染模块").length > 0 && $xml.find("渲染模块")[0].textContent == '0')
-					$('#gRender').hide();
-					
-				if($xml.find("效果图册").length > 0 && $xml.find("效果图册")[0].textContent == '0')
-					$('#gAlbum').hide();
-				
-		    },
-		    error: function (err)
-		    {
-		        console.log(err);
-		    }
-	   });		
+					//画墙
+					if(id == '6a05818070bc4c5db67fd340c00ff6c0' && value == '1')
+						InitAPI_Base();
+
+					//产品清单
+					if(id == '51345a177cc9453aa285450e4917a49d' && value == '1')
+						$('#mStandardBudget').hide();
+
+					//快速预算
+					if(id == '9b41b4a182ac48f9b4fc4e932d4945c7' && value == '1')
+						$('#mBasicBudget').hide();
+
+					//云币支付
+					if(id == '09d4b90bb6ad4c0c87211c9c075458ac' && value == '1')
+					{
+						sessionStorage.setItem('UseYunbi','1');
+					}
+					else
+					{
+						sessionStorage.setItem('UseYunbi','0');
+					}
+
+					//渲染模块
+					if(id == '0395968f2e1f47d09b58c0d690d4e6f4' && value == '0')
+						$('#gRender').hide();
+
+					//效果图册
+					if(id == '5260e61116844d388fbdc3f7a5e39ace' && value == '0')
+						$('#gAlbum').hide();
+
+					//品牌
+					if(id == 'a5cb4d4a983e46aa9655eebf579912a5' && value == '0')
+						$('#gAlbum').hide();
+
+					//导入CAD
+					if(id == 'd36e8052404346a2b954f1364e2b7e12' && value == '0')
+					{
+						$('#mLoadImage').hide();
+						$('#cad-demo').hide();
+					}
+
+					//样版间
+					if(id == '5ee4639cbfe5417eb9b1062b68964083' && value == '0')
+					{
+						$('#mRoomTab').hide();
+					}
+
+					//模型库
+					if(id == '90c26adadd724cf29be7c5380e7fac9b' && value == '0')
+					{
+						$('#mModelingTab').hide();
+					}
+
+					//导出CAD
+					if(id == '0355a2a0d63a49ce855a2e49f3aee1d3' && value == '0')
+					{
+						$('.exportCAD').hide();
+					}
+				}
+
+			},
+			error: function (err)
+			{
+				console.log(err);
+			}
+		});
     }
 
     function SetLogo()
@@ -285,7 +339,7 @@ function UnifiedLogin(userName,passWord)
 
 				$('#mLoginBak').hide();
 				$('#mLoginBK').hide();
-				CheckUser1();
+				LoadSystemConfig();
 			}
 		}else{
 			alert(i18n.t(`Language.IncorrectUserNameOrPassword`));
